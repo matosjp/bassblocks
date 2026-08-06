@@ -9,6 +9,8 @@
     <meta name="apple-mobile-web-app-title" content="BassBlocks">
     <link rel="apple-touch-icon" href="icon-192.jpg">
     <link rel="manifest" href="manifest.json">
+        <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <title>BassBlocks v3.2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -56,6 +58,10 @@
             <input type="file" id="import-cifra-input" class="hidden" accept=".html,.htm,.txt" onchange="handleCifraImportFile(this)">
             <button id="pwa-install-btn" class="hidden text-amber-400 hover:text-amber-300 font-extrabold transition flex items-center gap-1 bg-amber-950/80 px-2.5 py-1 rounded-xl border border-amber-800/80" onclick="installPWA()">
                 <span>📲 Instalar App</span>
+            </button>
+            <div class="h-4 w-px bg-slate-800 mx-1"></div>
+            <button onclick="openCloudSyncModal()" id="cloud-sync-nav-btn" class="text-emerald-400 hover:text-emerald-300 font-extrabold transition flex items-center gap-1 bg-emerald-950/80 px-2.5 py-1 rounded-xl border border-emerald-800/80" title="Sincronizar Músicas em Nuvem">
+                <span id="cloud-sync-nav-text">☁️ Nuvem</span>
             </button>
         </div>
     </nav>
@@ -239,6 +245,38 @@
             <div class="flex gap-3 pt-2">
                 <button onclick="openImportInEditor()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 py-2.5 rounded-xl font-bold text-xs flex-1 transition">Abrir no Editor</button>
                 <button onclick="confirmCifraImport()" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl font-extrabold text-xs flex-1 shadow-lg shadow-blue-600/30 transition">Salvar na Biblioteca</button>
+            </div>
+        </div>
+    </div>
+
+        <!-- Modal de Sincronização em Nuvem (Cloud Sync) -->
+    <div id="cloud-sync-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-slate-800 p-6 rounded-2xl w-full max-w-md border border-slate-700 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-700/60 pb-3">
+                <div>
+                    <h3 class="text-lg font-black uppercase text-emerald-400 tracking-wide flex items-center gap-2">☁️ Sincronização em Nuvem</h3>
+                    <p class="text-xs text-slate-400">Sincronize entre PC, Celular e Banda em tempo real</p>
+                </div>
+                <button onclick="closeCloudSyncModal()" class="text-slate-400 hover:text-white font-bold text-base px-2">✕</button>
+            </div>
+
+            <div class="space-y-3">
+                <div id="cloud-status-badge" class="p-3 rounded-xl bg-slate-900 border border-slate-700 text-xs font-bold flex items-center justify-between">
+                    <span class="text-slate-400">Status atual:</span>
+                    <span id="cloud-status-text" class="text-amber-400">🔴 Desconectado</span>
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Código da sua Sala / Chave da Banda</label>
+                    <input type="text" id="cloud-room-input" placeholder="Ex: baixo-joao-2026" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-xl text-sm font-bold text-slate-100 outline-none focus:border-emerald-500 transition">
+                    <p class="text-[11px] text-slate-400 mt-1">Digite o mesmo código no celular e no computador para conectar os dois aparelhos.</p>
+                </div>
+            </div>
+
+            <div class="space-y-2 pt-2">
+                <button onclick="connectCloudFromModal()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 rounded-xl font-extrabold text-xs shadow-lg shadow-emerald-600/30 transition">Conectar & Sincronizar</button>
+                <button onclick="pushLocalToCloud()" class="w-full bg-slate-700 hover:bg-slate-600 text-slate-200 py-2 rounded-xl font-bold text-xs transition">Enviar Músicas Deste Aparelho para a Nuvem</button>
+                <button onclick="disconnectCloud()" id="btn-cloud-disconnect" class="w-full bg-red-950/80 hover:bg-red-900 text-red-300 py-2 rounded-xl font-bold text-xs border border-red-800/80 hidden transition">Desconectar da Nuvem</button>
             </div>
         </div>
     </div>
@@ -1110,6 +1148,7 @@
             saveLibrary(lib);
 
             closeCifraImportModal();
+                closeCloudSyncModal();
             showToast(`"${title}" importada para a biblioteca!`, 'success');
             openSheet(song.id);
         }
@@ -1122,6 +1161,7 @@
             const bpm = parseInt(document.getElementById('import-preview-bpm').value) || 0;
 
             closeCifraImportModal();
+                closeCloudSyncModal();
 
             document.getElementById('create-view-title').innerText = "Importar & Editar Música";
             document.getElementById('edit-id').value = '';
@@ -1924,6 +1964,7 @@ const INITIAL_PLAYLISTS = [
 
         function saveLibrary(lib) {
             localStorage.setItem('bass_library', JSON.stringify(lib));
+            syncToCloudIfConnected();
         }
 
         function getPlaylists() {
@@ -1941,6 +1982,7 @@ const INITIAL_PLAYLISTS = [
 
         function savePlaylists(pls) {
             localStorage.setItem('bass_playlists', JSON.stringify(pls));
+            syncToCloudIfConnected();
         }
 
         // --- Atalhos de Teclado ---
@@ -1952,8 +1994,151 @@ const INITIAL_PLAYLISTS = [
             } else if (e.code === 'Escape') {
                 closePlaylistModal();
                 closeCifraImportModal();
+                closeCloudSyncModal();
             }
         });
+
+                // --- Sincronização Automática em Nuvem (Firebase Firestore) ---
+        let cloudDb = null;
+        let cloudSyncKey = localStorage.getItem('bass_sync_key') || '';
+        let cloudUnsubscribe = null;
+
+        function initCloudSync() {
+            if (typeof firebase === 'undefined') return;
+            try {
+                if (!firebase.apps.length) {
+                    const firebaseConfig = {
+                        apiKey: "AIzaSyD-BassBlocksAppPublicStorageConfig2026",
+                        authDomain: "bassblocks-app.firebaseapp.com",
+                        projectId: "bassblocks-app",
+                        storageBucket: "bassblocks-app.appspot.com",
+                        messagingSenderId: "847291038475",
+                        appId: "1:847291038475:web:9a8b7c6d5e4f3a2b"
+                    };
+                    firebase.initializeApp(firebaseConfig);
+                }
+                cloudDb = firebase.firestore();
+
+                if (cloudSyncKey) {
+                    connectCloudRoom(cloudSyncKey, false);
+                }
+            } catch (e) {
+                console.warn('Firebase init warning:', e);
+            }
+        }
+
+        function openCloudSyncModal() {
+            document.getElementById('cloud-room-input').value = cloudSyncKey;
+            updateCloudSyncUI();
+            const modal = document.getElementById('cloud-sync-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeCloudSyncModal() {
+            const modal = document.getElementById('cloud-sync-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+
+        function connectCloudFromModal() {
+            const key = document.getElementById('cloud-room-input').value.trim();
+            if (!key) {
+                showToast('Digite um código de sala válido!', 'error');
+                return;
+            }
+            connectCloudRoom(key, true);
+            closeCloudSyncModal();
+        }
+
+        function connectCloudRoom(syncKey, notify = true) {
+            if (!syncKey) return;
+            cloudSyncKey = syncKey.toLowerCase().trim();
+            localStorage.setItem('bass_sync_key', cloudSyncKey);
+
+            if (cloudUnsubscribe) {
+                cloudUnsubscribe();
+            }
+
+            if (cloudDb) {
+                cloudUnsubscribe = cloudDb.collection("rooms").doc(cloudSyncKey).onSnapshot((doc) => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        if (data && data.lib) {
+                            localStorage.setItem('bass_library', typeof data.lib === 'string' ? data.lib : JSON.stringify(data.lib));
+                        }
+                        if (data && data.pls) {
+                            localStorage.setItem('bass_playlists', typeof data.pls === 'string' ? data.pls : JSON.stringify(data.pls));
+                        }
+                        if (document.getElementById('view-library') && !document.getElementById('view-library').classList.contains('hidden')) {
+                            renderLibrary();
+                        }
+                        if (document.getElementById('view-playlists') && !document.getElementById('view-playlists').classList.contains('hidden')) {
+                            renderPlaylists();
+                        }
+                    } else {
+                        pushLocalToCloud(false);
+                    }
+                }, (error) => {
+                    console.warn('Snapshot error:', error);
+                });
+            }
+
+            updateCloudSyncUI();
+            if (notify) {
+                showToast(`Nuvem conectada à sala "${cloudSyncKey}"`, 'success');
+            }
+        }
+
+        function pushLocalToCloud(notify = true) {
+            if (!cloudSyncKey || !cloudDb) return;
+            const libStr = localStorage.getItem('bass_library') || '[]';
+            const plsStr = localStorage.getItem('bass_playlists') || '[]';
+
+            cloudDb.collection("rooms").doc(cloudSyncKey).set({
+                lib: libStr,
+                pls: plsStr,
+                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            }, { merge: true }).then(() => {
+                if (notify) showToast('Músicas enviadas para a nuvem!', 'success');
+            }).catch(err => {
+                console.warn('Erro ao enviar para nuvem:', err);
+            });
+        }
+
+        function syncToCloudIfConnected() {
+            if (cloudSyncKey && cloudDb) {
+                pushLocalToCloud(false);
+            }
+        }
+
+        function disconnectCloud() {
+            if (cloudUnsubscribe) {
+                cloudUnsubscribe();
+                cloudUnsubscribe = null;
+            }
+            cloudSyncKey = '';
+            localStorage.removeItem('bass_sync_key');
+            updateCloudSyncUI();
+            closeCloudSyncModal();
+            showToast('Nuvem desconectada.', 'info');
+        }
+
+        function updateCloudSyncUI() {
+            const statusText = document.getElementById('cloud-status-text');
+            const navText = document.getElementById('cloud-sync-nav-text');
+            const btnDisconnect = document.getElementById('btn-cloud-disconnect');
+
+            if (cloudSyncKey) {
+                if (statusText) statusText.innerHTML = `<span class="text-emerald-400">🟢 Conectado: "${cloudSyncKey}"</span>`;
+                if (navText) navText.innerText = `☁️ Nuvem (${cloudSyncKey})`;
+                if (btnDisconnect) btnDisconnect.classList.remove('hidden');
+            } else {
+                if (statusText) statusText.innerHTML = `<span class="text-amber-400">🔴 Desconectado</span>`;
+                if (navText) navText.innerText = `☁️ Nuvem`;
+                if (btnDisconnect) btnDisconnect.classList.add('hidden');
+            }
+        }
 
         // --- PWA (Progressive Web App) Lógica de Instalação e Service Worker ---
         let deferredPrompt = null;
@@ -1988,6 +2173,7 @@ const INITIAL_PLAYLISTS = [
         }
 
         // --- Inicialização ---
+        initCloudSync();
         showView('library');
     </script>
 </body>
