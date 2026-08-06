@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="BassBlocks">
+    <link rel="apple-touch-icon" href="icon-192.jpg">
+    <link rel="manifest" href="manifest.json">
+    <title>BassBlocks v3.2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .section-tab { background: #1e293b; border-left: 4px solid #eab308; }
+        .chord-box { background: #f1f5f9; border: 2px solid #cbd5e1; border-radius: 6px; padding: 4px 10px; font-weight: 800; color: #0f172a; display: inline-block; margin: 3px; min-width: 48px; text-align: center; font-size: 0.95em; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .metronome-flash { animation: flash 0.12s ease-out; }
+        @keyframes flash { from { background-color: #3b82f6; transform: scale(1.3); } to { background-color: #334155; transform: scale(1); } }
+        @media print { 
+            .no-print { display: none !important; } 
+            body { background: white !important; color: black !important; padding: 0 !important; }
+            #sheet-content { background: white !important; color: black !important; box-shadow: none !important; border: none !important; padding: 0 !important; } 
+            .chord-box { border-color: #94a3b8 !important; background: #f8fafc !important; }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen flex flex-col">
+
+    <!-- Navegação Principal -->
+    <nav class="max-w-6xl w-full mx-auto mb-8 flex flex-wrap justify-between items-center no-print border-b border-slate-800 pb-4 gap-4">
+        <div class="flex items-center gap-3 cursor-pointer" onclick="showView('library')">
+            <div class="bg-blue-600 text-white p-2 rounded-xl font-black text-xl tracking-tighter shadow-lg shadow-blue-500/20">BB</div>
+            <h1 class="text-2xl font-black tracking-tight text-blue-500">BASS<span class="text-slate-100">BLOCKS</span> <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded border border-slate-700 font-bold ml-1">v3.2</span></h1>
+        </div>
+        <div class="flex flex-wrap gap-4 text-xs font-black uppercase tracking-wider items-center">
+            <button id="nav-btn-create" onclick="prepareCreate()" class="nav-link hover:text-blue-400 transition py-1">Criar</button>
+            <button id="nav-btn-library" onclick="showView('library')" class="nav-link hover:text-blue-400 transition py-1">Biblioteca</button>
+            <button id="nav-btn-playlists" onclick="showView('playlists')" class="nav-link hover:text-blue-400 transition py-1">Playlists</button>
+            <div class="h-4 w-px bg-slate-800 mx-1"></div>
+            <button onclick="exportData()" class="text-slate-400 hover:text-white transition flex items-center gap-1" title="Exportar backup em JSON">
+                <span>Backup</span>
+            </button>
+            <button onclick="document.getElementById('import-input').click()" class="text-slate-400 hover:text-white transition flex items-center gap-1" title="Importar arquivo de backup JSON">
+                <span>Importar</span>
+            </button>
+            <input type="file" id="import-input" class="hidden" accept=".json" onchange="importData(this)">
+            <div class="h-4 w-px bg-slate-800 mx-1"></div>
+            <button onclick="document.getElementById('import-cifra-input').click()" class="text-blue-400 hover:text-blue-300 transition flex items-center gap-1 font-bold" title="Importar Cifra de Guitarra em HTML ou TXT">
+                <span>⚡ Cifra HTML</span>
+            </button>
+            <input type="file" id="import-cifra-input" class="hidden" accept=".html,.htm,.txt" onchange="handleCifraImportFile(this)">
+            <button id="pwa-install-btn" class="hidden text-amber-400 hover:text-amber-300 font-extrabold transition flex items-center gap-1 bg-amber-950/80 px-2.5 py-1 rounded-xl border border-amber-800/80" onclick="installPWA()">
+                <span>📲 Instalar App</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Tela: Criar / Editar Música -->
+    <main id="view-create" class="max-w-4xl w-full mx-auto space-y-6 flex-1">
+        <div class="bg-slate-800/80 backdrop-blur p-6 rounded-2xl border border-slate-700/60 shadow-xl">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="create-view-title" class="text-sm font-black uppercase tracking-widest text-slate-400">Nova Música</h2>
+                <button onclick="showView('library')" class="text-xs font-bold text-slate-500 hover:text-slate-300">CANCELAR</button>
+            </div>
+            <input type="hidden" id="edit-id">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <input type="text" id="title" placeholder="Nome da Música" class="bg-slate-900 border border-slate-700 focus:border-blue-500 p-3 rounded-xl col-span-2 outline-none font-bold text-slate-100 placeholder-slate-500 transition">
+                <input type="text" id="artist" placeholder="Artista / Banda" class="bg-slate-900 border border-slate-700 focus:border-blue-500 p-3 rounded-xl outline-none text-slate-100 placeholder-slate-500 transition">
+                <div class="flex gap-2">
+                    <input type="text" id="key" placeholder="Tom (Ex: C, Am)" class="bg-slate-900 border border-slate-700 focus:border-blue-500 p-3 rounded-xl w-full text-center font-bold text-blue-400 placeholder-slate-500 transition uppercase">
+                    <input type="number" id="bpm_input" placeholder="BPM" min="30" max="300" class="bg-slate-900 border border-slate-700 focus:border-blue-500 p-3 rounded-xl w-full text-center font-bold text-amber-400 placeholder-slate-500 transition">
+                </div>
+            </div>
+            <textarea id="notes" placeholder="Anotações gerais (afinação, tom original, dicas para o baixo...)" class="w-full mt-4 bg-slate-900 border border-slate-700 focus:border-blue-500 p-3 rounded-xl text-sm text-slate-300 h-20 outline-none resize-y placeholder-slate-500 transition"></textarea>
+        </div>
+
+        <div id="sections-container" class="space-y-4"></div>
+
+        <div class="flex flex-wrap gap-3 pt-4 border-t border-slate-800 items-center justify-between">
+            <div class="flex gap-2">
+                <button onclick="addSectionRow('CHORDS')" class="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1">+ ACORDES</button>
+                <button onclick="addSectionRow('TAB')" class="bg-amber-800/80 hover:bg-amber-700 text-amber-200 px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1">+ TABLATURA</button>
+            </div>
+            <button onclick="saveSong()" id="save-btn" class="bg-blue-600 hover:bg-blue-500 px-8 py-2.5 rounded-xl font-extrabold uppercase text-xs tracking-wider shadow-lg shadow-blue-600/30 transition">Salvar Música</button>
+        </div>
+    </main>
+
+    <!-- Tela: Biblioteca -->
+    <main id="view-library" class="max-w-4xl w-full mx-auto hidden space-y-6 flex-1">
+        <div class="flex flex-col md:flex-row gap-3 bg-slate-800/80 backdrop-blur p-4 rounded-2xl border border-slate-700/60 shadow-xl">
+            <div class="relative flex-1">
+                <input type="text" id="search-input" oninput="renderLibrary()" placeholder="🔍 Buscar por música, artista ou anotação..." class="w-full bg-slate-900 border border-slate-700 focus:border-blue-500 p-3 rounded-xl text-sm outline-none text-slate-200 placeholder-slate-500 transition">
+            </div>
+            <div class="flex gap-2">
+                <select id="key-filter" onchange="renderLibrary()" class="bg-slate-900 border border-slate-700 focus:border-blue-500 p-3 rounded-xl text-xs uppercase font-extrabold text-blue-400 outline-none cursor-pointer">
+                    <option value="">TODOS OS TONS</option>
+                </select>
+                <select id="sort-select" onchange="renderLibrary()" class="bg-slate-900 border border-slate-700 focus:border-blue-500 p-3 rounded-xl text-xs uppercase font-extrabold text-slate-300 outline-none cursor-pointer">
+                    <option value="title">A-Z (TÍTULO)</option>
+                    <option value="artist">ARTISTA</option>
+                    <option value="key">TOM</option>
+                    <option value="recent">MAIS RECENTES</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="flex justify-between items-center px-1">
+            <span id="library-counter" class="text-xs font-bold text-slate-500 uppercase tracking-wider"></span>
+            <button onclick="prepareCreate()" class="text-xs font-bold text-blue-400 hover:underline flex items-center gap-1">+ NOVA MÚSICA</button>
+        </div>
+    
+        <div id="library-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    </main>
+
+    <!-- Tela: Playlists -->
+    <main id="view-playlists" class="max-w-4xl w-full mx-auto hidden space-y-6 flex-1">
+        <div class="flex justify-between items-center">
+            <div>
+                <h2 class="text-xl font-black uppercase tracking-widest text-slate-100">Setlists & Playlists</h2>
+                <p class="text-xs text-slate-400 font-medium">Organize o repertório para ensaios e shows</p>
+            </div>
+            <button onclick="createPlaylist()" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-xl text-xs font-extrabold tracking-wider shadow-lg shadow-blue-600/20 transition">+ NOVA LISTA</button>
+        </div>
+        <div id="playlist-list" class="grid grid-cols-1 gap-4"></div>
+    </main>
+
+    <!-- Tela: Visualização da Cifra (Sheet View) -->
+    <main id="view-sheet" class="max-w-7xl w-full mx-auto hidden flex-1">
+        <div class="no-print flex flex-wrap justify-between items-center mb-6 gap-4 bg-slate-800/80 backdrop-blur p-4 rounded-2xl border border-slate-700/60 shadow-xl">
+            <div class="flex flex-wrap gap-3 items-center">
+                <button onclick="showView('library')" class="text-slate-400 hover:text-white font-bold text-xs uppercase transition flex items-center gap-1">
+                    ← Voltar
+                </button>
+                <div id="playlist-nav" class="flex gap-2 items-center border-l border-slate-700 pl-3 hidden">
+                    <button id="btn-prev-song" onclick="navPlaylist(-1)" class="bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-lg text-[10px] font-extrabold transition">← ANTERIOR</button>
+                    <span id="playlist-progress" class="text-[10px] font-bold text-blue-400 px-1"></span>
+                    <button id="btn-next-song" onclick="navPlaylist(1)" class="bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-lg text-[10px] font-extrabold transition">PRÓXIMA →</button>
+                </div>
+            </div>
+            
+            <!-- Controles Musicais: Transposição, Colunas, Fonte, Metrônomo -->
+            <div class="flex flex-wrap gap-3 items-center">
+                <!-- Transpositor -->
+                <div class="flex gap-1 items-center bg-slate-900 p-1 rounded-xl border border-slate-700/80">
+                    <span class="text-[9px] font-extrabold text-slate-400 mx-1 uppercase">Tom:</span>
+                    <button onclick="transposeSong(-1)" class="w-7 h-7 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-black text-slate-200" title="Diminuir 1 semitom">-1</button>
+                    <button onclick="resetTransposition()" id="trans-badge" class="px-2 py-0.5 bg-blue-950 text-blue-400 rounded-md text-[10px] font-extrabold border border-blue-800" title="Resetar tom original">0</button>
+                    <button onclick="transposeSong(1)" class="w-7 h-7 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-black text-slate-200" title="Aumentar 1 semitom">+1</button>
+                </div>
+
+                <!-- Colunas -->
+                <div class="flex gap-1 items-center bg-slate-900 p-1 rounded-xl border border-slate-700/80">
+                    <span class="text-[9px] font-extrabold text-slate-400 mx-1 uppercase">Cols:</span>
+                    <button onclick="setCols(1)" class="col-btn w-7 h-7 bg-slate-800 rounded-lg text-xs font-bold hover:bg-blue-600 transition">1</button>
+                    <button onclick="setCols(2)" class="col-btn w-7 h-7 bg-slate-800 rounded-lg text-xs font-bold hover:bg-blue-600 transition">2</button>
+                    <button onclick="setCols(3)" class="col-btn w-7 h-7 bg-slate-800 rounded-lg text-xs font-bold hover:bg-blue-600 transition">3</button>
+                    <button onclick="setCols(4)" class="col-btn w-7 h-7 bg-slate-800 rounded-lg text-xs font-bold hover:bg-blue-600 transition">4</button>
+                </div>
+
+                <!-- Tamanho do Texto -->
+                <div class="flex gap-1 items-center bg-slate-900 p-1 rounded-xl border border-slate-700/80">
+                    <button onclick="adjustFontSize(-1)" class="w-7 h-7 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-black" title="Diminuir texto">A-</button>
+                    <button onclick="adjustFontSize(1)" class="w-7 h-7 bg-slate-800 hover:bg-slate-700 rounded-lg text-xs font-black" title="Aumentar texto">A+</button>
+                </div>
+
+                <!-- Metrônomo -->
+                <div class="flex gap-2 items-center bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-700/80">
+                    <div id="metro-light" class="w-3 h-3 rounded-full bg-slate-700 transition"></div>
+                    <button id="btn-metro" onclick="toggleMetronome()" class="text-blue-400 hover:text-blue-300 text-xs font-black uppercase tracking-wider">Metrônomo</button>
+                    <button id="btn-audio-mute" onclick="toggleAudioMute()" class="text-slate-400 hover:text-white text-xs ml-1" title="Alternar Som do Metrônomo">🔊</button>
+                </div>
+
+                <button onclick="window.print()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider transition">Imprimir</button>
+            </div>
+        </div>
+
+        <div id="sheet-content" class="bg-white text-slate-900 p-6 md:p-10 rounded-2xl shadow-2xl transition-all"></div>
+    </main>
+
+    <!-- Modal de Seleção de Playlist -->
+    <div id="playlist-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-slate-800 p-6 rounded-2xl w-full max-w-md border border-slate-700 shadow-2xl">
+            <h3 class="text-lg font-black mb-4 uppercase tracking-tight text-slate-100">Adicionar à Playlist</h3>
+            <div id="modal-playlist-list" class="space-y-2 mb-6 max-h-60 overflow-y-auto"></div>
+            <button onclick="closePlaylistModal()" class="w-full bg-slate-700 hover:bg-slate-600 py-2.5 rounded-xl font-bold text-xs transition">CANCELAR</button>
+        </div>
+    </div>
+
+    <!-- Modal de Importação de Cifra (HTML / Cifra Club) -->
+    <div id="cifra-import-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-slate-800 p-6 rounded-2xl w-full max-w-2xl border border-slate-700 shadow-2xl space-y-4 max-h-[90vh] flex flex-col">
+            <div class="flex justify-between items-center border-b border-slate-700/60 pb-3">
+                <div>
+                    <h3 class="text-lg font-black uppercase text-blue-400 tracking-wide">Importar Cifra de Guitarra</h3>
+                    <p class="text-xs text-slate-400">Conversão inteligente para Cifra de Baixo</p>
+                </div>
+                <button onclick="closeCifraImportModal()" class="text-slate-400 hover:text-white font-bold text-base px-2">✕</button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <div class="col-span-2">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase">Música</label>
+                    <input type="text" id="import-preview-title" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl text-sm font-bold text-slate-100 outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 uppercase">Artista</label>
+                    <input type="text" id="import-preview-artist" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl text-sm text-slate-200 outline-none focus:border-blue-500">
+                </div>
+                <div class="flex gap-2">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">Tom</label>
+                        <input type="text" id="import-preview-key" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl text-sm font-bold text-blue-400 uppercase text-center outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase">BPM</label>
+                        <input type="number" id="import-preview-bpm" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-xl text-sm font-bold text-amber-400 text-center outline-none focus:border-blue-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Opções de Conversão -->
+            <div class="flex items-center justify-between bg-slate-900/80 p-3 rounded-xl border border-slate-700/60">
+                <label class="flex items-center gap-2.5 cursor-pointer text-xs font-bold text-slate-200 select-none">
+                    <input type="checkbox" id="import-condense-chords" checked onchange="reprocessCifraPreview()" class="w-4 h-4 rounded border-slate-700 text-blue-600 focus:ring-0">
+                    <span>Condensar em compassos de Baixo (<code class="text-blue-400 bg-slate-950 px-1 py-0.5 rounded text-[11px]">| E | B | C#m | A |</code>)</span>
+                </label>
+            </div>
+
+            <!-- Pré-visualização das Seções -->
+            <div class="flex-1 overflow-y-auto bg-slate-900/90 p-4 rounded-xl border border-slate-700/80 max-h-64">
+                <div id="import-preview-sections" class="space-y-3 font-mono text-xs"></div>
+            </div>
+
+            <div class="flex gap-3 pt-2">
+                <button onclick="openImportInEditor()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-4 py-2.5 rounded-xl font-bold text-xs flex-1 transition">Abrir no Editor</button>
+                <button onclick="confirmCifraImport()" class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl font-extrabold text-xs flex-1 shadow-lg shadow-blue-600/30 transition">Salvar na Biblioteca</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <script>
+        // --- Estado Global da Aplicação ---
+        let currentBpm = 0;
+        let currentCols = 1;
+        let transposeSteps = 0;
+        let fontSizeDelta = 0;
+        let metroInterval = null;
+        let isMetroOn = false;
+        let isAudioMuted = false;
+        let audioCtx = null;
+        let activePlaylist = null;
+        let activeSongIndex = -1;
+        let currentSongId = null;
+
+        const NOTES_SHARP = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        const NOTES_FLAT  = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+
+        // --- Navegação de Telas ---
+        function showView(view) {
+            ['create', 'library', 'sheet', 'playlists'].forEach(v => {
+                const el = document.getElementById(`view-${v}`);
+                if (el) el.classList.add('hidden');
+            });
+            const target = document.getElementById(`view-${view}`);
+            if (target) target.classList.remove('hidden');
+
+            // Atualiza destaque no menu superior
+            document.querySelectorAll('.nav-link').forEach(btn => btn.classList.remove('text-blue-400', 'font-extrabold'));
+            const activeNavBtn = document.getElementById(`nav-btn-${view}`);
+            if (activeNavBtn) activeNavBtn.classList.add('text-blue-400', 'font-extrabold');
+
+            if (view === 'library') renderLibrary();
+            if (view === 'playlists') renderPlaylists();
+            
+            stopMetronome();
+            if (view !== 'sheet') activePlaylist = null;
+        }
+
+        // --- Sistema de Notificações Toast ---
+        function showToast(msg, type = 'info') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+            const toast = document.createElement('div');
+            const bg = type === 'error' ? 'bg-red-600' : type === 'success' ? 'bg-emerald-600' : 'bg-blue-600';
+            toast.className = `${bg} text-white px-4 py-2.5 rounded-xl shadow-xl text-xs font-bold transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto flex items-center gap-2`;
+            toast.innerHTML = `<span>${msg}</span>`;
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // --- Sintetizador Sonora (Web Audio API) ---
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playClick(isAccent = false) {
+            if (isAudioMuted) return;
+            try {
+                initAudio();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(isAccent ? 1200 : 800, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.7, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.04);
+            } catch (e) {
+                console.warn('Audio play error:', e);
+            }
+        }
+
+        function toggleAudioMute() {
+            isAudioMuted = !isAudioMuted;
+            document.getElementById('btn-audio-mute').innerText = isAudioMuted ? '🔇' : '🔊';
+            showToast(isAudioMuted ? 'Som do metrônomo desligado' : 'Som do metrônomo ligado');
+        }
+
+        function toggleMetronome() {
+            isMetroOn ? stopMetronome() : startMetronome();
+        }
+
+        function startMetronome() {
+            if (!currentBpm || currentBpm <= 0) {
+                showToast('Defina um BPM válido para a música!', 'error');
+                return;
+            }
+            isMetroOn = true;
+            document.getElementById('btn-metro').innerText = 'PAUSAR';
+            let beat = 0;
+            
+            const intervalMs = 60000 / currentBpm;
+            metroInterval = setInterval(() => {
+                beat = (beat % 4) + 1;
+                playClick(beat === 1);
+                
+                const l = document.getElementById('metro-light');
+                if (l) {
+                    l.classList.add('metronome-flash');
+                    setTimeout(() => l.classList.remove('metronome-flash'), 100);
+                }
+            }, intervalMs);
+        }
+
+        function stopMetronome() {
+            isMetroOn = false;
+            clearInterval(metroInterval);
+            const btn = document.getElementById('btn-metro');
+            if (btn) btn.innerText = 'METRÔNOMO';
+        }
+
+        // --- Transposição de Acordes ---
+        function transposeNote(noteStr, semitones) {
+            const normMap = {
+                'Db':'C#', 'Eb':'D#', 'Gb':'F#', 'Ab':'G#', 'Bb':'A#',
+                'C':'C', 'C#':'C#', 'D':'D', 'D#':'D#', 'E':'E', 'F':'F',
+                'F#':'F#', 'G':'G', 'G#':'G#', 'A':'A', 'A#':'A#', 'B':'B'
+            };
+            const norm = normMap[noteStr];
+            if (!norm) return noteStr;
+            let idx = NOTES_SHARP.indexOf(norm);
+            if (idx === -1) return noteStr;
+            let newIdx = (idx + semitones) % 12;
+            if (newIdx < 0) newIdx += 12;
+            const useFlat = ['Db','Eb','Gb','Ab','Bb'].includes(noteStr);
+            return useFlat ? NOTES_FLAT[newIdx] : NOTES_SHARP[newIdx];
+        }
+
+        function transposeChordText(text, semitones) {
+            if (!semitones) return text;
+            return text.replace(/\b([A-G][#b]?)([^/\s|\-\n\r]*)(?:\/([A-G][#b]?)([^/\s|\-\n\r]*))?\b/g, (match, r1, s1, r2, s2) => {
+                let res = transposeNote(r1, semitones) + (s1 || '');
+                if (r2) {
+                    res += '/' + transposeNote(r2, semitones) + (s2 || '');
+                }
+                return res;
+            });
+        }
+
+        function transposeSong(delta) {
+            transposeSteps += delta;
+            updateTranspositionView();
+        }
+
+        function resetTransposition() {
+            transposeSteps = 0;
+            updateTranspositionView();
+        }
+
+        function updateTranspositionView() {
+            const badge = document.getElementById('trans-badge');
+            if (badge) {
+                badge.innerText = transposeSteps > 0 ? `+${transposeSteps}` : `${transposeSteps}`;
+                badge.className = transposeSteps !== 0 ? 
+                    'px-2 py-0.5 bg-amber-500 text-slate-950 rounded-md text-[10px] font-black' : 
+                    'px-2 py-0.5 bg-blue-950 text-blue-400 rounded-md text-[10px] font-extrabold border border-blue-800';
+            }
+            if (currentSongId) {
+                renderSheetContent(currentSongId);
+            }
+        }
+
+        // --- Ajuste de Tamanho de Fonte ---
+        function adjustFontSize(delta) {
+            fontSizeDelta = Math.max(-2, Math.min(4, fontSizeDelta + delta));
+            if (currentSongId) {
+                renderSheetContent(currentSongId);
+            }
+        }
+
+        function setCols(n) {
+            currentCols = n;
+            const grid = document.getElementById('sheet-grid');
+            if (!grid) return;
+            grid.classList.remove('md:grid-cols-2', 'lg:grid-cols-3', 'xl:grid-cols-4');
+            if (n >= 2) grid.classList.add('md:grid-cols-2');
+            if (n >= 3) grid.classList.add('lg:grid-cols-3');
+            if (n >= 4) grid.classList.add('xl:grid-cols-4');
+        }
+
+        // --- Criar / Editar Música ---
+        function addSectionRow(type = 'CHORDS', name = 'VERSO', content = '', layout = 'text') {
+            const id = Date.now() + Math.random().toString(36).substr(2, 5);
+            const container = document.getElementById('sections-container');
+            const div = document.createElement('div');
+            div.className = "bg-slate-800/80 p-4 rounded-xl border border-slate-700 relative shadow-md";
+            div.id = `row-${id}`;
+            const isTab = type === 'TAB';
+            div.innerHTML = `
+                <div class="flex justify-between items-center mb-2">
+                    <input type="text" class="sec-name bg-transparent font-black text-blue-400 text-xs tracking-wider outline-none uppercase focus:text-blue-300" value="${name}">
+                    <div class="flex gap-2 items-center">
+                        <select class="sec-layout bg-slate-900 text-[10px] font-bold p-1 rounded-lg border border-slate-700 text-slate-300">
+                            <option value="text" ${layout === 'text' ? 'selected' : ''}>TEXTO</option>
+                            <option value="grid" ${layout === 'grid' ? 'selected' : ''}>GRID</option>
+                        </select>
+                        <button onclick="document.getElementById('row-${id}').remove()" class="text-red-400 hover:text-red-300 text-xs font-bold px-2 py-1">✕</button>
+                    </div>
+                </div>
+                <textarea class="sec-content w-full bg-slate-900 border border-slate-700 focus:border-blue-500 p-3 rounded-lg font-mono text-slate-200 outline-none resize-y transition ${isTab ? 'h-32 text-xs' : 'h-20 text-base'}" 
+                data-type="${type}">${content}</textarea>
+            `;
+            container.appendChild(div);
+        }
+
+        function saveSong() {
+            const idInput = document.getElementById('edit-id').value;
+            const title = document.getElementById('title').value.trim() || 'Música Sem Nome';
+            const artist = document.getElementById('artist').value.trim() || 'Artista';
+            const key = document.getElementById('key').value.trim() || '-';
+            const bpm = parseInt(document.getElementById('bpm_input').value) || 0;
+            const notes = document.getElementById('notes').value.trim();
+
+            const sections = Array.from(document.querySelectorAll('#sections-container > div')).map(row => ({
+                name: row.querySelector('.sec-name').value.trim() || 'SEÇÃO',
+                content: row.querySelector('.sec-content').value,
+                type: row.querySelector('.sec-content').dataset.type || 'CHORDS',
+                layout: row.querySelector('.sec-layout').value || 'text'
+            }));
+
+            const song = {
+                id: idInput ? parseInt(idInput) : Date.now(),
+                title, artist, key, bpm, notes, sections,
+                updatedAt: Date.now()
+            };
+
+            let lib = getLibrary();
+            if (idInput) {
+                const idx = lib.findIndex(s => s.id === song.id);
+                if (idx !== -1) lib[idx] = song;
+                else lib.push(song);
+            } else {
+                lib.push(song);
+            }
+            saveLibrary(lib);
+            showToast(`"${title}" salva com sucesso!`, 'success');
+            showView('library');
+        }
+
+        function prepareCreate() {
+            document.getElementById('create-view-title').innerText = "Nova Música";
+            document.getElementById('edit-id').value = '';
+            document.getElementById('title').value = '';
+            document.getElementById('artist').value = '';
+            document.getElementById('key').value = '';
+            document.getElementById('bpm_input').value = '';
+            document.getElementById('notes').value = '';
+            document.getElementById('sections-container').innerHTML = '';
+            addSectionRow('CHORDS', 'INTRO', '');
+            showView('create');
+        }
+
+        function editSong(id) {
+            const s = getLibrary().find(x => x.id === id);
+            if (!s) return;
+            document.getElementById('create-view-title').innerText = "Editar Música";
+            document.getElementById('edit-id').value = s.id;
+            document.getElementById('title').value = s.title;
+            document.getElementById('artist').value = s.artist;
+            document.getElementById('bpm_input').value = s.bpm || '';
+            document.getElementById('key').value = s.key;
+            document.getElementById('notes').value = s.notes || '';
+            
+            const container = document.getElementById('sections-container');
+            container.innerHTML = '';
+            const secs = (s.sections && s.sections.length) ? s.sections : [{ name: 'INTRO', content: '', type: 'CHORDS', layout: 'text' }];
+            secs.forEach(sec => {
+                const type = sec.type || (sec.isTab ? 'TAB' : 'CHORDS');
+                addSectionRow(type, sec.name, sec.content, sec.layout || 'text');
+            });
+            showView('create');
+        }
+
+        function deleteSong(id) {
+            const song = getLibrary().find(s => s.id === id);
+            if (confirm(`Deseja excluir a música "${song ? song.title : ''}"?`)) {
+                let lib = getLibrary().filter(s => s.id !== id);
+                saveLibrary(lib);
+                
+                // Remove das playlists
+                let pls = getPlaylists();
+                pls.forEach(p => { p.songIds = p.songIds.filter(sid => sid !== id); });
+                savePlaylists(pls);
+
+                showToast('Música excluída!', 'info');
+                renderLibrary();
+            }
+        }
+
+        // --- Renderização da Biblioteca ---
+        function renderLibrary() {
+            const list = document.getElementById('library-list');
+            const search = document.getElementById('search-input').value.toLowerCase();
+            const keyFilter = document.getElementById('key-filter').value;
+            const sort = document.getElementById('sort-select').value;
+            let lib = getLibrary();
+
+            // Povoar dinamicamente o filtro de tons mantendo a seleção atual
+            const keySelect = document.getElementById('key-filter');
+            const currentSelectedKey = keySelect.value;
+            const existingKeys = [...new Set(lib.map(s => (s.key || '').trim().toUpperCase()).filter(k => k && k !== '-'))].sort();
+            
+            keySelect.innerHTML = '<option value="">TODOS OS TONS</option>' + 
+                existingKeys.map(k => `<option value="${k}">${k}</option>`).join('');
+            keySelect.value = currentSelectedKey;
+
+            // Filtros
+            lib = lib.filter(s => {
+                const matchesSearch = (s.title || '').toLowerCase().includes(search) || 
+                                      (s.artist || '').toLowerCase().includes(search) ||
+                                      (s.notes || '').toLowerCase().includes(search);
+                const matchesKey = keyFilter === "" || (s.key || '').toUpperCase() === keyFilter.toUpperCase();
+                return matchesSearch && matchesKey;
+            });
+
+            // Ordenação
+            lib.sort((a, b) => {
+                if (sort === 'recent') return (b.updatedAt || b.id) - (a.updatedAt || a.id);
+                const valA = (a[sort] || '').toString().toLowerCase();
+                const valB = (b[sort] || '').toString().toLowerCase();
+                return valA.localeCompare(valB);
+            });
+
+            // Contador
+            document.getElementById('library-counter').innerText = `Mostrando ${lib.length} música(s)`;
+
+            // Renderizar Cards
+            list.innerHTML = lib.length ? lib.map(song => `
+                <div class="bg-slate-800/90 p-5 rounded-2xl border border-slate-700/80 flex justify-between items-center shadow-lg hover:border-blue-500/80 transition group">
+                    <div class="cursor-pointer flex-1 mr-4" onclick="openSheet(${song.id})">
+                        <h3 class="text-base font-extrabold uppercase tracking-tight text-slate-100 group-hover:text-blue-400 transition">${song.title}</h3>
+                        <div class="flex items-center gap-2 mt-1">
+                            <span class="text-slate-400 text-xs font-bold uppercase">${song.artist}</span>
+                            <span class="text-slate-600">•</span>
+                            <span class="bg-blue-950 text-blue-400 px-2 py-0.5 rounded text-[10px] font-black border border-blue-800/60">${song.key || '-'}</span>
+                            ${song.bpm ? `<span class="bg-amber-950 text-amber-400 px-2 py-0.5 rounded text-[10px] font-black border border-amber-800/60">${song.bpm} BPM</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="showPlaylistModal(${song.id})" class="bg-slate-700 hover:bg-blue-600 text-white w-8 h-8 rounded-lg font-extrabold text-sm transition" title="Adicionar à Playlist">+</button>
+                        <button onclick="editSong(${song.id})" class="bg-slate-700 hover:bg-slate-600 text-slate-300 w-8 h-8 rounded-lg font-bold text-xs transition" title="Editar">✏️</button>
+                        <button onclick="deleteSong(${song.id})" class="bg-slate-700 hover:bg-red-600 text-slate-300 hover:text-white w-8 h-8 rounded-lg font-bold text-xs transition" title="Excluir">✕</button>
+                    </div>
+                </div>
+            `).join('') : '<div class="col-span-full py-12 text-center text-slate-500 font-bold bg-slate-800/40 rounded-2xl border border-slate-800">Nenhum resultado encontrado na biblioteca</div>';
+        }
+
+        // --- Visualização da Cifra ---
+        function openSheet(id, playlistId = null) {
+            currentSongId = id;
+            transposeSteps = 0;
+            const lib = getLibrary();
+            const s = lib.find(x => x.id === id);
+            if (!s) return;
+            
+            currentBpm = parseInt(s.bpm) || 0;
+
+            if (playlistId) {
+                const pl = getPlaylists().find(p => p.id === playlistId);
+                if (pl) {
+                    activePlaylist = pl;
+                    activeSongIndex = pl.songIds.indexOf(id);
+                    const nav = document.getElementById('playlist-nav');
+                    if (nav) nav.classList.remove('hidden');
+                    updatePlaylistNavUI();
+                }
+            } else {
+                activePlaylist = null;
+                const nav = document.getElementById('playlist-nav');
+                if (nav) nav.classList.add('hidden');
+            }
+
+            renderSheetContent(id);
+            showView('sheet');
+        }
+
+        function renderSheetContent(id) {
+            const s = getLibrary().find(x => x.id === id);
+            if (!s) return;
+
+            const baseFontSizeClass = fontSizeDelta === -2 ? 'text-xs' :
+                                      fontSizeDelta === -1 ? 'text-sm' :
+                                      fontSizeDelta === 1  ? 'text-xl' :
+                                      fontSizeDelta === 2  ? 'text-2xl' :
+                                      fontSizeDelta === 3  ? 'text-3xl' : 'text-lg';
+
+            const displayKey = transposeSteps !== 0 ? 
+                `${transposeNote(s.key, transposeSteps)} (${s.key})` : (s.key || '-');
+
+            const sectionsHtml = (s.sections || []).map(sec => {
+                const type = sec.type || (sec.isTab ? 'TAB' : 'CHORDS');
+                const layout = sec.layout || 'text';
+                let contentText = sec.content || '';
+
+                if (type === 'CHORDS' && transposeSteps !== 0) {
+                    contentText = transposeChordText(contentText, transposeSteps);
+                }
+
+                let formatted = contentText;
+                if (layout === 'grid' && type === 'CHORDS') {
+                    formatted = contentText.split(/[|/ \n\r]+/)
+                        .filter(x => x.trim() !== '')
+                        .map(c => `<span class="chord-box">${c}</span>`)
+                        .join('');
+                }
+
+                return `
+                    <div class="mb-4 p-5 bg-slate-50 rounded-xl border-l-8 border-slate-300 break-inside-avoid shadow-sm">
+                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-2">${sec.name}</span>
+                        <div class="${type === 'TAB' ? 'text-xs font-mono' : `${baseFontSizeClass} font-mono`} font-extrabold whitespace-pre-wrap text-slate-900 leading-relaxed">${formatted}</div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('sheet-content').innerHTML = `
+                <div class="flex justify-between items-end border-b-4 border-slate-900 mb-6 pb-3">
+                    <div>
+                        <h1 class="text-3xl md:text-4xl font-black uppercase tracking-tight text-slate-900">${s.title}</h1>
+                        <p class="text-base font-bold text-slate-500 italic mt-0.5">${s.artist}</p>
+                    </div>
+                    <div class="text-right font-black text-xs text-slate-900 uppercase">
+                        <div>Tom: <span class="text-blue-600">${displayKey}</span></div>
+                        ${s.bpm ? `<div class="mt-0.5 text-amber-700">${s.bpm} BPM</div>` : ''}
+                    </div>
+                </div>
+                ${s.notes ? `<div class="mb-6 p-4 bg-blue-50 text-blue-950 text-xs rounded-xl border border-blue-200 font-semibold leading-relaxed"><strong>💡 ANOTAÇÕES:</strong> ${s.notes}</div>` : ''}
+                <div id="sheet-grid" class="grid gap-4">${sectionsHtml}</div>
+            `;
+            setCols(currentCols);
+        }
+
+        function updatePlaylistNavUI() {
+            if (!activePlaylist) return;
+            const progress = document.getElementById('playlist-progress');
+            if (progress) {
+                progress.innerText = `${activeSongIndex + 1} de ${activePlaylist.songIds.length}`;
+            }
+            const btnPrev = document.getElementById('btn-prev-song');
+            const btnNext = document.getElementById('btn-next-song');
+            if (btnPrev) btnPrev.disabled = activeSongIndex <= 0;
+            if (btnNext) btnNext.disabled = activeSongIndex >= activePlaylist.songIds.length - 1;
+        }
+
+        function navPlaylist(dir) {
+            if (!activePlaylist) return;
+            let nextIdx = activeSongIndex + dir;
+            if (nextIdx >= 0 && nextIdx < activePlaylist.songIds.length) {
+                openSheet(activePlaylist.songIds[nextIdx], activePlaylist.id);
+            }
+        }
+
+        // --- Gestão de Playlists ---
+        let draggedPlaylistSong = null;
+
+        function handlePlaylistDragStart(e, plId, index) {
+            draggedPlaylistSong = { plId, index };
+            e.dataTransfer.effectAllowed = 'move';
+            e.currentTarget.classList.add('opacity-40');
+        }
+
+        function handlePlaylistDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+
+        function handlePlaylistDrop(e, plId, targetIndex) {
+            e.preventDefault();
+            if (!draggedPlaylistSong || draggedPlaylistSong.plId !== plId || draggedPlaylistSong.index === targetIndex) return;
+            movePlaylistItem(plId, draggedPlaylistSong.index, targetIndex);
+            draggedPlaylistSong = null;
+        }
+
+        function movePlaylistItem(plId, fromIdx, toIdx) {
+            let pls = getPlaylists();
+            const pl = pls.find(p => p.id === plId);
+            if (!pl) return;
+            if (toIdx < 0 || toIdx >= pl.songIds.length) return;
+
+            const [moved] = pl.songIds.splice(fromIdx, 1);
+            pl.songIds.splice(toIdx, 0, moved);
+
+            savePlaylists(pls);
+            renderPlaylists();
+            showToast('Ordem da playlist atualizada!', 'info');
+        }
+
+        function renderPlaylists() {
+            const list = document.getElementById('playlist-list');
+            const pls = getPlaylists();
+            const lib = getLibrary();
+
+            list.innerHTML = pls.length ? pls.map(pl => `
+                <div class="bg-slate-800/90 p-6 rounded-2xl border border-slate-700/80 shadow-xl space-y-4">
+                    <div class="flex justify-between items-center border-b border-slate-700/60 pb-4">
+                        <div>
+                            <h3 class="font-black uppercase text-blue-400 text-lg tracking-wider">${pl.name}</h3>
+                            <span class="text-xs font-bold text-slate-500">${pl.songIds.length} música(s)</span>
+                        </div>
+                        <button onclick="deletePlaylist(${pl.id})" class="text-red-400 hover:text-red-300 text-xs font-bold uppercase transition">Apagar Playlist</button>
+                    </div>
+                    <div class="space-y-2">
+                        ${pl.songIds.map((sid, idx) => {
+                            const song = lib.find(s => s.id === sid);
+                            const isFirst = idx === 0;
+                            const isLast = idx === pl.songIds.length - 1;
+                            return song ? `
+                                <div class="bg-slate-900/80 p-3 rounded-xl text-sm flex justify-between items-center border border-slate-800 hover:border-slate-700 transition cursor-grab active:cursor-grabbing"
+                                     draggable="true"
+                                     ondragstart="handlePlaylistDragStart(event, ${pl.id}, ${idx})"
+                                     ondragover="handlePlaylistDragOver(event)"
+                                     ondrop="handlePlaylistDrop(event, ${pl.id}, ${idx})">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-slate-600 text-xs select-none" title="Arraste para reordenar">☰</span>
+                                        <span onclick="openSheet(${song.id}, ${pl.id})" class="cursor-pointer font-extrabold hover:text-blue-400 flex items-center gap-2">
+                                            <span class="text-xs text-slate-500 w-5">${idx + 1}.</span> ${song.title} <span class="text-slate-500 font-normal text-xs">(${song.artist})</span>
+                                        </span>
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <button onclick="movePlaylistItem(${pl.id}, ${idx}, ${idx - 1})" ${isFirst ? 'disabled class="opacity-20 text-slate-500 p-1 text-xs cursor-default"' : 'class="text-slate-400 hover:text-blue-400 p-1 text-xs font-bold transition"'} title="Mover para cima">▲</button>
+                                        <button onclick="movePlaylistItem(${pl.id}, ${idx}, ${idx + 1})" ${isLast ? 'disabled class="opacity-20 text-slate-500 p-1 text-xs cursor-default"' : 'class="text-slate-400 hover:text-blue-400 p-1 text-xs font-bold transition"'} title="Mover para baixo">▼</button>
+                                        <button onclick="removeFromPlaylist(${pl.id}, ${song.id})" class="text-slate-500 hover:text-red-400 p-1 font-bold text-xs ml-2 transition" title="Remover da lista">✕</button>
+                                    </div>
+                                </div>
+                            ` : '';
+                        }).join('')}
+                    </div>
+                </div>
+            `).join('') : '<div class="py-12 text-center text-slate-500 font-bold bg-slate-800/40 rounded-2xl border border-slate-800">Nenhuma playlist criada ainda</div>';
+        }
+
+        function createPlaylist() {
+            const name = prompt('Nome da Setlist / Playlist:');
+            if (!name || !name.trim()) return;
+            let pls = getPlaylists();
+            pls.push({ id: Date.now(), name: name.trim(), songIds: [] });
+            savePlaylists(pls);
+            showToast('Playlist criada com sucesso!', 'success');
+            renderPlaylists();
+        }
+
+        function deletePlaylist(id) {
+            if (confirm('Deseja realmente excluir esta playlist?')) {
+                let pls = getPlaylists().filter(p => p.id !== id);
+                savePlaylists(pls);
+                showToast('Playlist removida!', 'info');
+                renderPlaylists();
+            }
+        }
+
+        function showPlaylistModal(songId) {
+            const pls = getPlaylists();
+            const container = document.getElementById('modal-playlist-list');
+            container.innerHTML = pls.length ? pls.map(pl => `
+                <button onclick="addToPlaylist(${pl.id}, ${songId})" class="w-full text-left bg-slate-900 p-4 rounded-xl text-xs font-extrabold hover:bg-blue-600 transition flex justify-between items-center">
+                    <span>${pl.name}</span>
+                    <span class="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400">${pl.songIds.length} músicas</span>
+                </button>
+            `).join('') : '<p class="text-slate-500 text-xs text-center py-4">Crie uma playlist primeiro na aba Playlists.</p>';
+            
+            const modal = document.getElementById('playlist-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closePlaylistModal() {
+            const modal = document.getElementById('playlist-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+
+        function addToPlaylist(plId, songId) {
+            let pls = getPlaylists();
+            const plIdx = pls.findIndex(p => p.id === plId);
+            if (plIdx !== -1) {
+                if (!pls[plIdx].songIds.includes(songId)) {
+                    pls[plIdx].songIds.push(songId);
+                    savePlaylists(pls);
+                    showToast('Adicionada à playlist!', 'success');
+                } else {
+                    showToast('Música já está nesta playlist', 'info');
+                }
+            }
+            closePlaylistModal();
+        }
+
+        function removeFromPlaylist(plId, songId) {
+            let pls = getPlaylists();
+            const pl = pls.find(p => p.id === plId);
+            if (pl) {
+                pl.songIds = pl.songIds.filter(id => id !== songId);
+                savePlaylists(pls);
+                showToast('Música removida da playlist', 'info');
+                renderPlaylists();
+            }
+        }
+
+        // --- Importação / Exportação de Dados ---
+        function exportData() {
+            const data = {
+                version: "3.2",
+                exportedAt: new Date().toISOString(),
+                lib: localStorage.getItem('bass_library'),
+                pls: localStorage.getItem('bass_playlists')
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `bassblocks_backup_${new Date().toISOString().slice(0,10)}.json`;
+            a.click();
+            showToast('Backup exportado com sucesso!', 'success');
+        }
+
+        function importData(input) {
+            if (!input.files || !input.files[0]) return;
+            const reader = new FileReader();
+            reader.onload = e => {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    let libData = parsed.lib || parsed.library;
+                    let plsData = parsed.pls || parsed.playlists;
+
+                    if (Array.isArray(parsed)) {
+                        libData = parsed;
+                    }
+
+                    if (typeof libData === 'object') {
+                        libData = JSON.stringify(libData);
+                    }
+                    if (typeof plsData === 'object') {
+                        plsData = JSON.stringify(plsData);
+                    }
+
+                    if (libData) localStorage.setItem('bass_library', libData);
+                    if (plsData) localStorage.setItem('bass_playlists', plsData);
+
+                    showToast('Dados importados com sucesso!', 'success');
+                    showView('library');
+                } catch (err) {
+                    console.error('Import error:', err);
+                    showToast('Erro ao importar arquivo JSON inválido', 'error');
+                }
+            };
+            reader.readAsText(input.files[0]);
+            input.value = '';
+        }
+
+        // --- Importador de Cifras em HTML / TXT (Guitarra para Baixo) ---
+        let pendingImportSong = null;
+        let rawCifraTextCache = '';
+
+        function handleCifraImportFile(input) {
+            if (!input.files || !input.files[0]) return;
+            const file = input.files[0];
+            const reader = new FileReader();
+            reader.onload = e => {
+                try {
+                    const content = e.target.result;
+                    parseGuitarCifraHtml(content);
+                } catch (err) {
+                    console.error('Erro ao ler cifra:', err);
+                    showToast('Erro ao processar o arquivo de cifra.', 'error');
+                }
+            };
+            reader.readAsText(file);
+            input.value = '';
+        }
+
+        function isChordToken(token) {
+            if (!token) return false;
+            const clean = token.replace(/[\(\)\[\]\{\},]/g, '');
+            return /^[A-G][#b]?(?:m|maj|min|dim|aug|sus|add|[0-9])*(?:\/[A-G][#b]?)?$/.test(clean);
+        }
+
+        function parseGuitarCifraHtml(htmlContent) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlContent, 'text/html');
+
+            let title = '';
+            let artist = '';
+
+            const cifraTitleEl = doc.querySelector('.t1, .cifra-title, h1');
+            if (cifraTitleEl) title = cifraTitleEl.innerText.trim();
+
+            const cifraArtistEl = doc.querySelector('.t3, .cifra-artist, h2');
+            if (cifraArtistEl) artist = cifraArtistEl.innerText.trim();
+
+            if (!title) {
+                const docTitle = doc.title || '';
+                const parts = docTitle.split(/[-–|]/);
+                if (parts.length >= 1) title = parts[0];
+                if (parts.length >= 2 && !artist) artist = parts[1];
+            }
+
+            title = title.replace(/(cifra club|cifra|tabs|violão|guitarra)/gi, '').replace(/^[-–\s]+|[-–\s]+$/g, '').trim();
+            artist = artist.replace(/(cifra club|cifra)/gi, '').replace(/^[-–\s]+|[-–\s]+$/g, '').trim();
+
+            let key = '';
+            const keyEl = doc.querySelector('#cifra_tom, .cifra-tom, [data-key]');
+            if (keyEl) key = keyEl.innerText.trim();
+            if (!key) {
+                const tomMatch = doc.body.innerText.match(/Tom:\s*([A-G][#b]?m?)/i);
+                if (tomMatch) key = tomMatch[1];
+            }
+
+            let bpm = 0;
+            const bpmMatch = doc.body.innerText.match(/BPM:\s*(\d+)/i) || htmlContent.match(/"bpm"\s*:\s*(\d+)/);
+            if (bpmMatch) bpm = parseInt(bpmMatch[1]);
+
+            const preEl = doc.querySelector('pre.cifra, pre');
+            if (preEl) {
+                rawCifraTextCache = preEl.innerText || preEl.textContent || '';
+            } else {
+                rawCifraTextCache = doc.body.innerText || '';
+            }
+
+            pendingImportSong = {
+                title: title || 'Música Importada',
+                artist: artist || 'Artista',
+                key: key || 'C',
+                bpm: bpm || 0
+            };
+
+            document.getElementById('import-preview-title').value = pendingImportSong.title;
+            document.getElementById('import-preview-artist').value = pendingImportSong.artist;
+            document.getElementById('import-preview-key').value = pendingImportSong.key;
+            document.getElementById('import-preview-bpm').value = pendingImportSong.bpm || '';
+
+            reprocessCifraPreview();
+
+            const modal = document.getElementById('cifra-import-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function reprocessCifraPreview() {
+            if (!rawCifraTextCache) return;
+            const condense = document.getElementById('import-condense-chords').checked;
+            const sections = parseCifraTextToBassSections(rawCifraTextCache, condense);
+
+            const container = document.getElementById('import-preview-sections');
+            container.innerHTML = sections.map((sec) => `
+                <div class="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                    <span class="text-[10px] font-black text-blue-400 block mb-1 uppercase tracking-wider">${sec.name} ${sec.type === 'TAB' ? '(TABLATURA)' : ''}</span>
+                    <pre class="whitespace-pre-wrap text-slate-200">${sec.content}</pre>
+                </div>
+            `).join('');
+
+            if (pendingImportSong) {
+                pendingImportSong.sections = sections;
+            }
+        }
+
+        function parseCifraTextToBassSections(rawText, condense = true) {
+            const lines = rawText.split(/\r?\n/);
+            const sections = [];
+            let currentSectionName = 'INTRO';
+            let currentLines = [];
+
+            function saveCurrentSection() {
+                if (!currentLines.length) return;
+
+                const isTabSection = currentLines.some(l => /^[a-gE]\s*\|/i.test(l.trim()));
+                let type = isTabSection ? 'TAB' : 'CHORDS';
+                let content = '';
+
+                if (type === 'TAB') {
+                    content = currentLines.join('\n');
+                } else if (condense) {
+                    const sectionChords = [];
+                    currentLines.forEach(line => {
+                        const words = line.trim().split(/\s+/);
+                        const chordsInLine = words.filter(w => isChordToken(w));
+                        if (chordsInLine.length > 0 && (chordsInLine.length / words.length) >= 0.35) {
+                            sectionChords.push(...chordsInLine);
+                        }
+                    });
+
+                    if (sectionChords.length > 0) {
+                        const formattedBars = [];
+                        for (let i = 0; i < sectionChords.length; i += 4) {
+                            const bar = sectionChords.slice(i, i + 4).join(' | ');
+                            formattedBars.push(`| ${bar} |`);
+                        }
+                        content = formattedBars.join('\n');
+                    } else {
+                        content = currentLines.join('\n');
+                    }
+                } else {
+                    content = currentLines.join('\n');
+                }
+
+                if (content.trim()) {
+                    sections.push({
+                        name: currentSectionName.toUpperCase(),
+                        content: content.trim(),
+                        type: type,
+                        layout: 'text'
+                    });
+                }
+                currentLines = [];
+            }
+
+            const sectionRegex = /^\s*\[([^\]]+)\]|^\s*(intro|primeira parte|segunda parte|terceira parte|pré-refrão|refrão|ponte|solo|interlúdio|outro|final)\s*:?/i;
+
+            lines.forEach(line => {
+                const trimmed = line.trim();
+                if (!trimmed) return;
+
+                const secMatch = trimmed.match(sectionRegex);
+                if (secMatch) {
+                    saveCurrentSection();
+                    currentSectionName = (secMatch[1] || secMatch[2]).toUpperCase();
+                    return;
+                }
+
+                currentLines.push(line);
+            });
+
+            saveCurrentSection();
+            return sections;
+        }
+
+        function closeCifraImportModal() {
+            const modal = document.getElementById('cifra-import-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+        }
+
+        function confirmCifraImport() {
+            if (!pendingImportSong) return;
+
+            const title = document.getElementById('import-preview-title').value.trim() || 'Música Importada';
+            const artist = document.getElementById('import-preview-artist').value.trim() || 'Artista';
+            const key = document.getElementById('import-preview-key').value.trim() || '-';
+            const bpm = parseInt(document.getElementById('import-preview-bpm').value) || 0;
+
+            const song = {
+                id: Date.now(),
+                title, artist, key, bpm,
+                notes: 'Importado de arquivo Cifra HTML',
+                sections: pendingImportSong.sections || [],
+                updatedAt: Date.now()
+            };
+
+            let lib = getLibrary();
+            lib.push(song);
+            saveLibrary(lib);
+
+            closeCifraImportModal();
+            showToast(`"${title}" importada para a biblioteca!`, 'success');
+            openSheet(song.id);
+        }
+
+        function openImportInEditor() {
+            if (!pendingImportSong) return;
+            const title = document.getElementById('import-preview-title').value.trim() || 'Música Importada';
+            const artist = document.getElementById('import-preview-artist').value.trim() || 'Artista';
+            const key = document.getElementById('import-preview-key').value.trim() || '-';
+            const bpm = parseInt(document.getElementById('import-preview-bpm').value) || 0;
+
+            closeCifraImportModal();
+
+            document.getElementById('create-view-title').innerText = "Importar & Editar Música";
+            document.getElementById('edit-id').value = '';
+            document.getElementById('title').value = title;
+            document.getElementById('artist').value = artist;
+            document.getElementById('key').value = key;
+            document.getElementById('bpm_input').value = bpm || '';
+            document.getElementById('notes').value = 'Importado de arquivo Cifra HTML';
+
+            const container = document.getElementById('sections-container');
+            container.innerHTML = '';
+            (pendingImportSong.sections || []).forEach(sec => {
+                addSectionRow(sec.type, sec.name, sec.content, sec.layout || 'text');
+            });
+
+            showView('create');
+        }
+
+        // --- Utilitários de Persistência ---
+        function getLibrary() {
+            try {
+                return JSON.parse(localStorage.getItem('bass_library') || '[]');
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveLibrary(lib) {
+            localStorage.setItem('bass_library', JSON.stringify(lib));
+        }
+
+        function getPlaylists() {
+            try {
+                return JSON.parse(localStorage.getItem('bass_playlists') || '[]');
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function savePlaylists(pls) {
+            localStorage.setItem('bass_playlists', JSON.stringify(pls));
+        }
+
+        // --- Atalhos de Teclado ---
+        window.addEventListener('keydown', e => {
+            const isInput = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
+            if (e.code === 'Space' && !isInput && !document.getElementById('view-sheet').classList.contains('hidden')) {
+                e.preventDefault();
+                toggleMetronome();
+            } else if (e.code === 'Escape') {
+                closePlaylistModal();
+                closeCifraImportModal();
+            }
+        });
+
+        // --- PWA (Progressive Web App) Lógica de Instalação e Service Worker ---
+        let deferredPrompt = null;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const btn = document.getElementById('pwa-install-btn');
+            if (btn) btn.classList.remove('hidden');
+        });
+
+        function installPWA() {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    showToast('BassBlocks instalado com sucesso!', 'success');
+                }
+                deferredPrompt = null;
+                const btn = document.getElementById('pwa-install-btn');
+                if (btn) btn.classList.add('hidden');
+            });
+        }
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(reg => {
+                    console.log('Service Worker registrado:', reg.scope);
+                }).catch(err => {
+                    console.warn('Erro ao registrar Service Worker:', err);
+                });
+            });
+        }
+
+        // --- Inicialização ---
+        showView('library');
+    </script>
+</body>
+</html>
