@@ -1,7 +1,7 @@
 {
-  "name": "BassBlocks - Cifras de Baixo",
+  "name": "BassBlocks v3.7 - Cifras de Baixo",
   "short_name": "BassBlocks",
-  "description": "Aplicativo de cifras, tablatura e setlists para baixistas",
+  "description": "Aplicativo de cifras, tablatura, metrônomo e setlists em nuvem para baixistas",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f172a",
