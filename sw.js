@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bassblocks-v3.6';
+const CACHE_NAME = 'bassblocks-v3.7';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -33,6 +33,9 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
+  if (event.request.url.includes('ntfy.sh')) {
+    return; // Bypass Service Worker cache for live Cloud Sync API
+  }
   event.respondWith(
     caches.match(event.request).then(cachedResponse => {
       if (cachedResponse) {

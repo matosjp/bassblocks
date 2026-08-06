@@ -38,27 +38,27 @@
             <h1 class="text-2xl font-black tracking-tight text-blue-500">BASS<span class="text-slate-100">BLOCKS</span> <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded border border-slate-700 font-bold ml-1">v3.2</span></h1>
         </div>
         <div class="flex flex-wrap gap-4 text-xs font-black uppercase tracking-wider items-center">
-            <button id="nav-btn-create" onclick="prepareCreate()" class="nav-link hover:text-blue-400 transition py-1">Criar</button>
-            <button id="nav-btn-library" onclick="showView('library')" class="nav-link hover:text-blue-400 transition py-1">Biblioteca</button>
-            <button id="nav-btn-playlists" onclick="showView('playlists')" class="nav-link hover:text-blue-400 transition py-1">Playlists</button>
+            <button type="button" id="nav-btn-create" onclick="prepareCreate()" class="nav-link hover:text-blue-400 transition py-1">Criar</button>
+            <button type="button" id="nav-btn-library" onclick="showView('library')" class="nav-link hover:text-blue-400 transition py-1">Biblioteca</button>
+            <button type="button" id="nav-btn-playlists" onclick="showView('playlists')" class="nav-link hover:text-blue-400 transition py-1">Playlists</button>
             <div class="h-4 w-px bg-slate-800 mx-1"></div>
-            <button onclick="exportData()" class="text-slate-400 hover:text-white transition flex items-center gap-1" title="Exportar backup em JSON">
+            <button type="button" onclick="exportData()" class="text-slate-400 hover:text-white transition flex items-center gap-1" title="Exportar backup em JSON">
                 <span>Backup</span>
             </button>
-            <button onclick="document.getElementById('import-input').click()" class="text-slate-400 hover:text-white transition flex items-center gap-1" title="Importar arquivo de backup JSON">
+            <button type="button" onclick="document.getElementById('import-input').click()" class="text-slate-400 hover:text-white transition flex items-center gap-1" title="Importar arquivo de backup JSON">
                 <span>Importar</span>
             </button>
             <input type="file" id="import-input" class="hidden" accept=".json" onchange="importData(this)">
             <div class="h-4 w-px bg-slate-800 mx-1"></div>
-            <button onclick="document.getElementById('import-cifra-input').click()" class="text-blue-400 hover:text-blue-300 transition flex items-center gap-1 font-bold" title="Importar Cifra de Guitarra em HTML ou TXT">
+            <button type="button" onclick="document.getElementById('import-cifra-input').click()" class="text-blue-400 hover:text-blue-300 transition flex items-center gap-1 font-bold" title="Importar Cifra de Guitarra em HTML ou TXT">
                 <span>⚡ Cifra HTML</span>
             </button>
             <input type="file" id="import-cifra-input" class="hidden" accept=".html,.htm,.txt" onchange="handleCifraImportFile(this)">
-            <button id="pwa-install-btn" class="hidden text-amber-400 hover:text-amber-300 font-extrabold transition flex items-center gap-1 bg-amber-950/80 px-2.5 py-1 rounded-xl border border-amber-800/80" onclick="installPWA()">
+            <button type="button" id="pwa-install-btn" class="hidden text-amber-400 hover:text-amber-300 font-extrabold transition flex items-center gap-1 bg-amber-950/80 px-2.5 py-1 rounded-xl border border-amber-800/80" onclick="installPWA()">
                 <span>📲 Instalar App</span>
             </button>
             <div class="h-4 w-px bg-slate-800 mx-1"></div>
-            <button onclick="openCloudSyncModal()" id="cloud-sync-nav-btn" class="text-emerald-400 hover:text-emerald-300 font-extrabold transition flex items-center gap-1 bg-emerald-950/80 px-2.5 py-1 rounded-xl border border-emerald-800/80" title="Sincronizar Músicas em Nuvem">
+            <button type="button" onclick="openCloudSyncModal()" id="cloud-sync-nav-btn" class="text-emerald-400 hover:text-emerald-300 font-extrabold transition flex items-center gap-1 bg-emerald-950/80 px-2.5 py-1 rounded-xl border border-emerald-800/80" title="Sincronizar Músicas em Nuvem">
                 <span id="cloud-sync-nav-text">☁️ Nuvem</span>
             </button>
         </div>
@@ -2239,7 +2239,11 @@ const INITIAL_PLAYLISTS = [
         }
 
         // --- Inicialização ---
-        initCloudSync();
+        try {
+            initCloudSync();
+        } catch (e) {
+            console.warn('initCloudSync warning:', e);
+        }
         showView('library');
     </script>
 </body>
