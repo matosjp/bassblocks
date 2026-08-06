@@ -35,7 +35,7 @@
     <nav class="max-w-6xl w-full mx-auto mb-8 flex flex-wrap justify-between items-center no-print border-b border-slate-800 pb-4 gap-4">
         <div class="flex items-center gap-3 cursor-pointer" onclick="showView('library')">
             <div class="bg-blue-600 text-white p-2 rounded-xl font-black text-xl tracking-tighter shadow-lg shadow-blue-500/20">BB</div>
-            <h1 class="text-2xl font-black tracking-tight text-blue-500">BASS<span class="text-slate-100">BLOCKS</span> <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded border border-slate-700 font-bold ml-1">v3.11</span></h1>
+            <h1 class="text-2xl font-black tracking-tight text-blue-500">BASS<span class="text-slate-100">BLOCKS</span> <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded border border-slate-700 font-bold ml-1">v3.12</span></h1>
         </div>
         <div class="flex flex-wrap gap-4 text-xs font-black uppercase tracking-wider items-center">
             <button type="button" id="nav-btn-create" onclick="prepareCreate()" class="nav-link hover:text-blue-400 transition py-1">Criar</button>
@@ -2117,6 +2117,26 @@ const INITIAL_PLAYLISTS = [
 
             const roomTopic = 'bassblocks_' + cloudSyncKey;
 
+            // Função auxiliar para aplicar dados independente de ser anexo ou mensagem
+            const processParsedEvent = (parsed) => {
+                if (parsed.attachment && parsed.attachment.url) {
+                    fetch(parsed.attachment.url)
+                        .then(r => r.json())
+                        .then(d => applyCloudData(d))
+                        .catch(err => console.warn('Erro ao buscar anexo da nuvem:', err));
+                    return true;
+                } else if (parsed.message && parsed.message.startsWith('{')) {
+                    try {
+                        const data = JSON.parse(parsed.message);
+                        applyCloudData(data);
+                        return true;
+                    } catch (e) {
+                        return false;
+                    }
+                }
+                return false;
+            };
+
             // 1. Consultar última mensagem armazenada na sala
             fetch(`https://ntfy.sh/${roomTopic}/json?poll=1`)
                 .then(res => res.text())
@@ -2126,11 +2146,7 @@ const INITIAL_PLAYLISTS = [
                         for (let i = lines.length - 1; i >= 0; i--) {
                             try {
                                 const parsed = JSON.parse(lines[i]);
-                                if (parsed.message) {
-                                    const data = JSON.parse(parsed.message);
-                                    applyCloudData(data);
-                                    break;
-                                }
+                                if (processParsedEvent(parsed)) break;
                             } catch (e) {}
                         }
                     } else {
@@ -2146,10 +2162,7 @@ const INITIAL_PLAYLISTS = [
                 cloudEventSource.onmessage = (event) => {
                     try {
                         const parsed = JSON.parse(event.data);
-                        if (parsed.message) {
-                            const data = JSON.parse(parsed.message);
-                            applyCloudData(data);
-                        }
+                        processParsedEvent(parsed);
                     } catch (e) {
                         console.warn('Erro ao ler evento SSE:', e);
                     }
@@ -2270,7 +2283,7 @@ const INITIAL_PLAYLISTS = [
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js?v=3.11').then(reg => {
+                navigator.serviceWorker.register('./sw.js?v=3.12').then(reg => {
                     console.log('Service Worker registrado:', reg.scope);
                 }).catch(err => {
                     console.warn('Erro ao registrar Service Worker:', err);
