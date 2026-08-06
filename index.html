@@ -931,8 +931,8 @@
             const data = {
                 version: "3.2",
                 exportedAt: new Date().toISOString(),
-                lib: localStorage.getItem('bass_library'),
-                pls: localStorage.getItem('bass_playlists')
+                lib: safeGetStorage('bass_library'),
+                pls: safeGetStorage('bass_playlists')
             };
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const a = document.createElement('a');
@@ -962,8 +962,8 @@
                         plsData = JSON.stringify(plsData);
                     }
 
-                    if (libData) localStorage.setItem('bass_library', libData);
-                    if (plsData) localStorage.setItem('bass_playlists', plsData);
+                    if (libData) safeSetStorage('bass_library', libData);
+                    if (plsData) safeSetStorage('bass_playlists', plsData);
 
                     showToast('Dados importados com sucesso!', 'success');
                     showView('library');
@@ -1209,6 +1209,33 @@
             });
 
             showView('create');
+        }
+
+                // --- Utilitários de Persistência Segura (Local & Memória Fallback) ---
+        const memoryStorage = {};
+        function safeGetStorage(key, fallback = null) {
+            try {
+                const val = localStorage.getItem(key);
+                return val !== null ? val : fallback;
+            } catch (e) {
+                return memoryStorage[key] !== undefined ? memoryStorage[key] : fallback;
+            }
+        }
+
+        function safeSetStorage(key, value) {
+            try {
+                localStorage.setItem(key, value);
+            } catch (e) {
+                memoryStorage[key] = value;
+            }
+        }
+
+        function safeRemoveStorage(key) {
+            try {
+                localStorage.removeItem(key);
+            } catch (e) {
+                delete memoryStorage[key];
+            }
         }
 
         const INITIAL_LIBRARY = [
@@ -1982,9 +2009,9 @@ const INITIAL_PLAYLISTS = [
         // --- Utilitários de Persistência ---
         function getLibrary() {
             try {
-                const stored = localStorage.getItem('bass_library');
+                const stored = safeGetStorage('bass_library');
                 if (!stored || stored === '[]') {
-                    localStorage.setItem('bass_library', JSON.stringify(INITIAL_LIBRARY));
+                    safeSetStorage('bass_library', JSON.stringify(INITIAL_LIBRARY));
                     return INITIAL_LIBRARY;
                 }
                 return JSON.parse(stored);
@@ -1994,15 +2021,15 @@ const INITIAL_PLAYLISTS = [
         }
 
         function saveLibrary(lib) {
-            localStorage.setItem('bass_library', JSON.stringify(lib));
+            safeSetStorage('bass_library', JSON.stringify(lib));
             syncToCloudIfConnected();
         }
 
         function getPlaylists() {
             try {
-                const stored = localStorage.getItem('bass_playlists');
+                const stored = safeGetStorage('bass_playlists');
                 if (!stored || stored === '[]') {
-                    localStorage.setItem('bass_playlists', JSON.stringify(INITIAL_PLAYLISTS));
+                    safeSetStorage('bass_playlists', JSON.stringify(INITIAL_PLAYLISTS));
                     return INITIAL_PLAYLISTS;
                 }
                 return JSON.parse(stored);
@@ -2012,7 +2039,7 @@ const INITIAL_PLAYLISTS = [
         }
 
         function savePlaylists(pls) {
-            localStorage.setItem('bass_playlists', JSON.stringify(pls));
+            safeSetStorage('bass_playlists', JSON.stringify(pls));
             syncToCloudIfConnected();
         }
 
@@ -2030,11 +2057,12 @@ const INITIAL_PLAYLISTS = [
         });
 
                         // --- Sincronização Automática em Nuvem (EventSource SSE & PubSub) ---
-        let cloudSyncKey = localStorage.getItem('bass_sync_key') || '';
+        let cloudSyncKey = safeGetStorage('bass_sync_key') || '';
         let cloudEventSource = null;
         let isSyncingFromCloud = false;
 
         function initCloudSync() {
+            if (!window.location.protocol.startsWith('http')) return;
             if (cloudSyncKey) {
                 connectCloudRoom(cloudSyncKey, false);
             }
@@ -2067,7 +2095,7 @@ const INITIAL_PLAYLISTS = [
         function connectCloudRoom(syncKey, notify = true) {
             if (!syncKey) return;
             cloudSyncKey = syncKey.toLowerCase().trim().replace(/[^a-z0-9_-]/g, '_');
-            localStorage.setItem('bass_sync_key', cloudSyncKey);
+            safeSetStorage('bass_sync_key', cloudSyncKey);
 
             if (cloudEventSource) {
                 cloudEventSource.close();
@@ -2131,10 +2159,10 @@ const INITIAL_PLAYLISTS = [
             if (!data) return;
             isSyncingFromCloud = true;
             if (data.lib) {
-                localStorage.setItem('bass_library', typeof data.lib === 'string' ? data.lib : JSON.stringify(data.lib));
+                safeSetStorage('bass_library', typeof data.lib === 'string' ? data.lib : JSON.stringify(data.lib));
             }
             if (data.pls) {
-                localStorage.setItem('bass_playlists', typeof data.pls === 'string' ? data.pls : JSON.stringify(data.pls));
+                safeSetStorage('bass_playlists', typeof data.pls === 'string' ? data.pls : JSON.stringify(data.pls));
             }
             if (document.getElementById('view-library') && !document.getElementById('view-library').classList.contains('hidden')) {
                 renderLibrary();
@@ -2150,8 +2178,8 @@ const INITIAL_PLAYLISTS = [
 
         function pushLocalToCloud(notify = true) {
             if (!cloudSyncKey) return;
-            const libStr = localStorage.getItem('bass_library') || '[]';
-            const plsStr = localStorage.getItem('bass_playlists') || '[]';
+            const libStr = safeGetStorage('bass_library') || '[]';
+            const plsStr = safeGetStorage('bass_playlists') || '[]';
             const roomTopic = 'bassblocks_' + cloudSyncKey;
 
             const payload = JSON.stringify({
@@ -2184,7 +2212,7 @@ const INITIAL_PLAYLISTS = [
                 cloudEventSource = null;
             }
             cloudSyncKey = '';
-            localStorage.removeItem('bass_sync_key');
+            safeRemoveStorage('bass_sync_key');
             updateCloudSyncUI();
             closeCloudSyncModal();
             showToast('Nuvem desconectada.', 'info');
