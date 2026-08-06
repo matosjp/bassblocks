@@ -9,9 +9,7 @@
     <meta name="apple-mobile-web-app-title" content="BassBlocks">
     <link rel="apple-touch-icon" href="icon-192.jpg">
     <link rel="manifest" href="manifest.json">
-        <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <title>BassBlocks v3.2</title>
+        <title>BassBlocks v3.2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2031,32 +2029,14 @@ const INITIAL_PLAYLISTS = [
             }
         });
 
-                // --- Sincronização Automática em Nuvem (Firebase Firestore) ---
-        let cloudDb = null;
+                        // --- Sincronização Automática em Nuvem (EventSource SSE & PubSub) ---
         let cloudSyncKey = localStorage.getItem('bass_sync_key') || '';
-        let cloudUnsubscribe = null;
+        let cloudEventSource = null;
+        let isSyncingFromCloud = false;
 
         function initCloudSync() {
-            if (typeof firebase === 'undefined') return;
-            try {
-                if (!firebase.apps.length) {
-                    const firebaseConfig = {
-                        apiKey: "AIzaSyD-BassBlocksAppPublicStorageConfig2026",
-                        authDomain: "bassblocks-app.firebaseapp.com",
-                        projectId: "bassblocks-app",
-                        storageBucket: "bassblocks-app.appspot.com",
-                        messagingSenderId: "847291038475",
-                        appId: "1:847291038475:web:9a8b7c6d5e4f3a2b"
-                    };
-                    firebase.initializeApp(firebaseConfig);
-                }
-                cloudDb = firebase.firestore();
-
-                if (cloudSyncKey) {
-                    connectCloudRoom(cloudSyncKey, false);
-                }
-            } catch (e) {
-                console.warn('Firebase init warning:', e);
+            if (cloudSyncKey) {
+                connectCloudRoom(cloudSyncKey, false);
             }
         }
 
@@ -2086,35 +2066,59 @@ const INITIAL_PLAYLISTS = [
 
         function connectCloudRoom(syncKey, notify = true) {
             if (!syncKey) return;
-            cloudSyncKey = syncKey.toLowerCase().trim();
+            cloudSyncKey = syncKey.toLowerCase().trim().replace(/[^a-z0-9_-]/g, '_');
             localStorage.setItem('bass_sync_key', cloudSyncKey);
 
-            if (cloudUnsubscribe) {
-                cloudUnsubscribe();
+            if (cloudEventSource) {
+                cloudEventSource.close();
+                cloudEventSource = null;
             }
 
-            if (cloudDb) {
-                cloudUnsubscribe = cloudDb.collection("rooms").doc(cloudSyncKey).onSnapshot((doc) => {
-                    if (doc.exists) {
-                        const data = doc.data();
-                        if (data && data.lib) {
-                            localStorage.setItem('bass_library', typeof data.lib === 'string' ? data.lib : JSON.stringify(data.lib));
-                        }
-                        if (data && data.pls) {
-                            localStorage.setItem('bass_playlists', typeof data.pls === 'string' ? data.pls : JSON.stringify(data.pls));
-                        }
-                        if (document.getElementById('view-library') && !document.getElementById('view-library').classList.contains('hidden')) {
-                            renderLibrary();
-                        }
-                        if (document.getElementById('view-playlists') && !document.getElementById('view-playlists').classList.contains('hidden')) {
-                            renderPlaylists();
+            const roomTopic = 'bassblocks_' + cloudSyncKey;
+
+            // 1. Consultar última mensagem armazenada na sala
+            fetch(`https://ntfy.sh/${roomTopic}/json?poll=1`)
+                .then(res => res.text())
+                .then(text => {
+                    const lines = text.trim().split('
+').filter(l => l.trim());
+                    if (lines.length > 0) {
+                        for (let i = lines.length - 1; i >= 0; i--) {
+                            try {
+                                const parsed = JSON.parse(lines[i]);
+                                if (parsed.message) {
+                                    const data = JSON.parse(parsed.message);
+                                    applyCloudData(data);
+                                    break;
+                                }
+                            } catch (e) {}
                         }
                     } else {
                         pushLocalToCloud(false);
                     }
-                }, (error) => {
-                    console.warn('Snapshot error:', error);
+                }).catch(err => {
+                    console.warn('Erro ao consultar sala na nuvem:', err);
                 });
+
+            // 2. Inscrever para atualizações em tempo real (SSE)
+            try {
+                cloudEventSource = new EventSource(`https://ntfy.sh/${roomTopic}/sse`);
+                cloudEventSource.onmessage = (event) => {
+                    try {
+                        const parsed = JSON.parse(event.data);
+                        if (parsed.message) {
+                            const data = JSON.parse(parsed.message);
+                            applyCloudData(data);
+                        }
+                    } catch (e) {
+                        console.warn('Erro ao ler evento SSE:', e);
+                    }
+                };
+                cloudEventSource.onerror = (e) => {
+                    console.warn('Reconectando canal SSE...', e);
+                };
+            } catch (e) {
+                console.warn('EventSource não suportado:', e);
             }
 
             updateCloudSyncUI();
@@ -2123,32 +2127,61 @@ const INITIAL_PLAYLISTS = [
             }
         }
 
+        function applyCloudData(data) {
+            if (!data) return;
+            isSyncingFromCloud = true;
+            if (data.lib) {
+                localStorage.setItem('bass_library', typeof data.lib === 'string' ? data.lib : JSON.stringify(data.lib));
+            }
+            if (data.pls) {
+                localStorage.setItem('bass_playlists', typeof data.pls === 'string' ? data.pls : JSON.stringify(data.pls));
+            }
+            if (document.getElementById('view-library') && !document.getElementById('view-library').classList.contains('hidden')) {
+                renderLibrary();
+            }
+            if (document.getElementById('view-playlists') && !document.getElementById('view-playlists').classList.contains('hidden')) {
+                renderPlaylists();
+            }
+            if (currentSongId && document.getElementById('view-sheet') && !document.getElementById('view-sheet').classList.contains('hidden')) {
+                renderSheetContent(currentSongId);
+            }
+            isSyncingFromCloud = false;
+        }
+
         function pushLocalToCloud(notify = true) {
-            if (!cloudSyncKey || !cloudDb) return;
+            if (!cloudSyncKey) return;
             const libStr = localStorage.getItem('bass_library') || '[]';
             const plsStr = localStorage.getItem('bass_playlists') || '[]';
+            const roomTopic = 'bassblocks_' + cloudSyncKey;
 
-            cloudDb.collection("rooms").doc(cloudSyncKey).set({
+            const payload = JSON.stringify({
                 lib: libStr,
                 pls: plsStr,
-                updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-            }, { merge: true }).then(() => {
-                if (notify) showToast('Músicas enviadas para a nuvem!', 'success');
+                updatedAt: Date.now()
+            });
+
+            fetch(`https://ntfy.sh/${roomTopic}`, {
+                method: 'POST',
+                body: payload
+            }).then(res => {
+                if (res.ok && notify) {
+                    showToast('Músicas enviadas para a nuvem!', 'success');
+                }
             }).catch(err => {
-                console.warn('Erro ao enviar para nuvem:', err);
+                console.warn('Erro ao enviar dados para a nuvem:', err);
             });
         }
 
         function syncToCloudIfConnected() {
-            if (cloudSyncKey && cloudDb) {
+            if (cloudSyncKey && !isSyncingFromCloud) {
                 pushLocalToCloud(false);
             }
         }
 
         function disconnectCloud() {
-            if (cloudUnsubscribe) {
-                cloudUnsubscribe();
-                cloudUnsubscribe = null;
+            if (cloudEventSource) {
+                cloudEventSource.close();
+                cloudEventSource = null;
             }
             cloudSyncKey = '';
             localStorage.removeItem('bass_sync_key');
