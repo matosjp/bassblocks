@@ -35,7 +35,7 @@
     <nav class="max-w-6xl w-full mx-auto mb-8 flex flex-wrap justify-between items-center no-print border-b border-slate-800 pb-4 gap-4">
         <div class="flex items-center gap-3 cursor-pointer" onclick="showView('library')">
             <div class="bg-blue-600 text-white p-2 rounded-xl font-black text-xl tracking-tighter shadow-lg shadow-blue-500/20">BB</div>
-            <h1 class="text-2xl font-black tracking-tight text-blue-500">BASS<span class="text-slate-100">BLOCKS</span> <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded border border-slate-700 font-bold ml-1">v3.10</span></h1>
+            <h1 class="text-2xl font-black tracking-tight text-blue-500">BASS<span class="text-slate-100">BLOCKS</span> <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded border border-slate-700 font-bold ml-1">v3.11</span></h1>
         </div>
         <div class="flex flex-wrap gap-4 text-xs font-black uppercase tracking-wider items-center">
             <button type="button" id="nav-btn-create" onclick="prepareCreate()" class="nav-link hover:text-blue-400 transition py-1">Criar</button>
@@ -689,6 +689,144 @@
                     </div>
                 </div>
             `).join('');
+        }
+
+        function openSheet(id, playlistId = null) {
+            currentSongId = id;
+            transposeSteps = 0;
+            const lib = getLibrary();
+            const s = lib.find(x => x.id === id);
+            if (!s) return;
+            
+            currentBpm = parseInt(s.bpm) || 0;
+
+            if (playlistId) {
+                const pl = getPlaylists().find(p => p.id === playlistId);
+                if (pl) {
+                    activePlaylist = pl;
+                    activeSongIndex = pl.songIds.indexOf(id);
+                    const nav = document.getElementById('playlist-nav');
+                    if (nav) nav.classList.remove('hidden');
+                    updatePlaylistNavUI();
+                }
+            } else {
+                activePlaylist = null;
+                const nav = document.getElementById('playlist-nav');
+                if (nav) nav.classList.add('hidden');
+            }
+
+            renderSheetContent(id);
+            showView('sheet');
+        }
+
+        function renderSheetContent(id) {
+            const s = getLibrary().find(x => x.id === id);
+            if (!s) return;
+
+            const baseFontSizeClass = fontSizeDelta === -2 ? 'text-xs' :
+                                      fontSizeDelta === -1 ? 'text-sm' :
+                                      fontSizeDelta === 1  ? 'text-xl' :
+                                      fontSizeDelta === 2  ? 'text-2xl' :
+                                      fontSizeDelta === 3  ? 'text-3xl' : 'text-lg';
+
+            const displayKey = transposeSteps !== 0 ? 
+                `${transposeNote(s.key, transposeSteps)} (${s.key})` : (s.key || '-');
+
+            const sectionsHtml = (s.sections || []).map(sec => {
+                const type = sec.type || (sec.isTab ? 'TAB' : 'CHORDS');
+                const layout = sec.layout || 'text';
+                let contentText = sec.content || '';
+
+                if (type === 'CHORDS' && transposeSteps !== 0) {
+                    contentText = transposeChordText(contentText, transposeSteps);
+                }
+
+                let formatted = contentText;
+                if (layout === 'grid' && type === 'CHORDS') {
+                    formatted = contentText.split(/[|/ \n\r]+/)
+                        .filter(x => x.trim() !== '')
+                        .map(c => `<span class="chord-box">${c}</span>`)
+                        .join('');
+                }
+
+                return `
+                    <div class="mb-4 p-5 bg-slate-50 rounded-xl border-l-8 border-slate-300 break-inside-avoid shadow-sm">
+                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-2">${sec.name}</span>
+                        <div class="${type === 'TAB' ? 'text-xs font-mono' : `${baseFontSizeClass} font-mono`} font-extrabold whitespace-pre-wrap text-slate-900 leading-relaxed">${formatted}</div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('sheet-content').innerHTML = `
+                <div class="flex justify-between items-end border-b-4 border-slate-900 mb-6 pb-3">
+                    <div>
+                        <h1 class="text-3xl md:text-4xl font-black uppercase tracking-tight text-slate-900">${s.title}</h1>
+                        <p class="text-base font-bold text-slate-500 italic mt-0.5">${s.artist}</p>
+                    </div>
+                    <div class="text-right font-black text-xs text-slate-900 uppercase">
+                        <div>Tom: <span class="text-blue-600">${displayKey}</span></div>
+                        ${s.bpm ? `<div class="mt-0.5 text-amber-700">${s.bpm} BPM</div>` : ''}
+                    </div>
+                </div>
+                ${s.notes ? `<div class="mb-6 p-4 bg-blue-50 text-blue-950 text-xs rounded-xl border border-blue-200 font-semibold leading-relaxed"><strong>💡 ANOTAÇÕES:</strong> ${s.notes}</div>` : ''}
+                <div id="sheet-grid" class="grid gap-4">${sectionsHtml}</div>
+            `;
+            setCols(currentCols);
+        }
+
+        function updatePlaylistNavUI() {
+            if (!activePlaylist) return;
+            const progress = document.getElementById('playlist-progress');
+            if (progress) {
+                progress.innerText = `${activeSongIndex + 1} de ${activePlaylist.songIds.length}`;
+            }
+            const btnPrev = document.getElementById('btn-prev-song');
+            const btnNext = document.getElementById('btn-next-song');
+            if (btnPrev) btnPrev.disabled = activeSongIndex <= 0;
+            if (btnNext) btnNext.disabled = activeSongIndex >= activePlaylist.songIds.length - 1;
+        }
+
+        function navPlaylist(dir) {
+            if (!activePlaylist) return;
+            let nextIdx = activeSongIndex + dir;
+            if (nextIdx >= 0 && nextIdx < activePlaylist.songIds.length) {
+                openSheet(activePlaylist.songIds[nextIdx], activePlaylist.id);
+            }
+        }
+
+        // --- Gestão de Playlists ---
+        let draggedPlaylistSong = null;
+
+        function handlePlaylistDragStart(e, plId, index) {
+            draggedPlaylistSong = { plId, index };
+            e.dataTransfer.effectAllowed = 'move';
+            e.currentTarget.classList.add('opacity-40');
+        }
+
+        function handlePlaylistDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+        }
+
+        function handlePlaylistDrop(e, plId, targetIndex) {
+            e.preventDefault();
+            if (!draggedPlaylistSong || draggedPlaylistSong.plId !== plId || draggedPlaylistSong.index === targetIndex) return;
+            movePlaylistItem(plId, draggedPlaylistSong.index, targetIndex);
+            draggedPlaylistSong = null;
+        }
+
+        function movePlaylistItem(plId, fromIdx, toIdx) {
+            let pls = getPlaylists();
+            const pl = pls.find(p => p.id === plId);
+            if (!pl) return;
+            if (toIdx < 0 || toIdx >= pl.songIds.length) return;
+
+            const [moved] = pl.songIds.splice(fromIdx, 1);
+            pl.songIds.splice(toIdx, 0, moved);
+
+            savePlaylists(pls);
+            renderPlaylists();
+            showToast('Ordem da playlist atualizada!', 'info');
         }
 
         function renderPlaylists() {
@@ -2132,7 +2270,7 @@ const INITIAL_PLAYLISTS = [
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js?v=3.10').then(reg => {
+                navigator.serviceWorker.register('./sw.js?v=3.11').then(reg => {
                     console.log('Service Worker registrado:', reg.scope);
                 }).catch(err => {
                     console.warn('Erro ao registrar Service Worker:', err);
