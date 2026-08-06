@@ -1140,12 +1140,785 @@
             showView('create');
         }
 
+        const INITIAL_LIBRARY = [
+  {
+    "id": 1772490269688,
+    "title": "Isaías 9",
+    "artist": "Rodolfo",
+    "key": "D",
+    "bpm": "151",
+    "sections": [
+      {
+        "name": "INTRO & vERSO i",
+        "content": "|D|A|B",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "PRÉ-REFRÃO",
+        "content": "|G|B|E|\n|G|B|A|",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "REFRÃO & VERSO ii",
+        "content": "|B|F#|B|G|D|F#|G|",
+        "type": "CHORDS",
+        "layout": "text"
+      }
+    ]
+  },
+  {
+    "id": 1772491548193,
+    "title": "Estamos de Pé",
+    "artist": "Marcus Salles",
+    "key": "A",
+    "bpm": "110",
+    "sections": [
+      {
+        "name": "INTRO & FINALE",
+        "content": "|A|E|G|D|",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "VERSO",
+        "content": "|A|F#|D|A|",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "REFRÃO",
+        "content": "|A|E|B|C#|D|A|E|G|D|A|",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "PONTE",
+        "content": "|E|G|D|A|",
+        "type": "CHORDS",
+        "layout": "text"
+      }
+    ]
+  },
+  {
+    "id": 1772900992946,
+    "title": "A boa parte",
+    "artist": "fhop",
+    "key": "E",
+    "bpm": "144",
+    "sections": [
+      {
+        "name": "INTRO",
+        "content": "|E|",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "PRÉ-REFRÃO",
+        "content": "|B-E| |B-E|\n|B-E| |B-F#-G#-E|",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "SOLO",
+        "content": "|E-F#-G#-C#-B-E|\n\nG|----------------------------------------|\nD|----------------------------------------|\nA|-------4-2------------------------------|\nE|-0-2-4-----0----------------------------|",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "VERSO",
+        "content": "|E|A|\n|C#|A|E|",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "REFRÃO",
+        "content": "|E|F#|G#|A|B|\n|C#|F#|E|A|B|",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "PONTE",
+        "content": "|B|G#|A|F#|\n|B|G#|A|G#|",
+        "type": "CHORDS",
+        "layout": "text"
+      }
+    ]
+  },
+  {
+    "id": 1772901680703,
+    "title": "Meia Noite",
+    "artist": "fhop",
+    "key": "Bm",
+    "bpm": "98",
+    "notes": "A sequência E - F# - G - A é uma subida escalar. Aproveite para fazer essa linha com bastante sustentação, preparando para a explosão do Refrão Final.  Tente fazer o Fá# na 4ª corda (casa 2) ou na 3ª corda (casa 9) dependendo da região onde estiver tocando o Bm.",
+    "sections": [
+      {
+        "name": "VERSO",
+        "content": "|B|G|E|",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "PRÉ-REFRÃO",
+        "content": "|G|A| (x3)\n|E|",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "VERSO",
+        "content": "|G|D|E|G|A|",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "PONTE",
+        "content": "|E|F#|E|B|A| (x2)\n|E|F#|G|A| (x2)\n|G|A|B|F#|G|A|E|",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      }
+    ]
+  },
+  {
+    "id": 1775601624549,
+    "title": "Moises",
+    "artist": "Fernandinho",
+    "key": "Dm",
+    "bpm": "138",
+    "notes": "",
+    "sections": [
+      {
+        "name": "intro",
+        "content": "D D F D D ",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "VERSO",
+        "content": "D\nG F",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Pré-Refrão",
+        "content": "G C# C G# G E F F#\nG C# C G# G F E D# D",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "REFRÃO",
+        "content": "D   A#   F   C \nD   A#   F",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "INTERLÚDIO",
+        "content": "D G F D",
+        "type": "CHORDS",
+        "layout": "text"
+      }
+    ]
+  },
+  {
+    "id": 1775772532134,
+    "title": "Gratidão",
+    "artist": "FHOP",
+    "key": "Bb",
+    "bpm": "78",
+    "notes": "A sequência Bb -> Gm -> F -> Eb forma um desenho de \"caixa\" muito comum no baixo entre a corda E e A. É excelente para manter a mão relaxada durante a execução longa.",
+    "sections": [
+      {
+        "name": "Intro",
+        "content": "Bb | Gm | F | Eb",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Primeira Parte",
+        "content": "Bb | Gm | F | Eb\nBb | Gm | F | Eb",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Refrão",
+        "content": "Bb | Bb | F | F\nD | Eb | Gm - F\nBb | Bb | F | F\nD | Eb | Gm - F | Bb",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Segunda Parte",
+        "content": "Bb | Gm | F | Eb\nBb | Gm | F | Eb",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Refrão",
+        "content": "Bb | Bb | F | F\nD | Eb | Gm - F\nBb | Bb | F | F\nD | Eb | Gm - F",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Ponte",
+        "content": "Bb | Bb | Bb | Bb\nBb | F | D - Eb | Bb - F\nBb | F | D - Eb | Gm - F",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Instrumental",
+        "content": "Eb - Gm | F | Eb - Gm | F | Eb - Gm | F - Eb",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Refrão (alt)",
+        "content": "Bb | Bb | F | F\nEb | Eb | Eb | Eb (Aqui o baixo sustenta o Eb)\nBb | Bb | F | F\nD | Eb | Eb | Eb",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Interlúdio",
+        "content": "Bb | F | Eb | Eb (Repetir conforme a intensidade)",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Ponte",
+        "content": "Bb | F | Eb | Eb\nBb | F | Eb | Eb",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Refrão Final",
+        "content": "Bb | Bb | F | F\nEb | Eb | Eb | Eb\nBb | Bb | F | F\nD | Eb | Eb | Bb",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      }
+    ]
+  },
+  {
+    "id": 1775781915024,
+    "title": "Jesus Em Tua Presença",
+    "artist": "MORADA",
+    "key": "E",
+    "bpm": "71",
+    "notes": "",
+    "sections": [
+      {
+        "name": "SOLO1",
+        "content": "A B C# G#\nA B F#\nA B C# G# F#",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "PRIMEIRA PARTE",
+        "content": "C# A B E",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "PRÉ-REFRÃO",
+        "content": "G# A B C#\nC# G# A B F#",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "REFRÃO",
+        "content": "A B C#\nA B C#\nA B C# B A\nA B C# G#",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "sOLO2",
+        "content": "A B A B C# G# \nA B A G# F#\nA B C# G# B(h)A(h)B F#",
+        "type": "CHORDS",
+        "layout": "text"
+      }
+    ]
+  },
+  {
+    "id": 1775916721632,
+    "title": "Grande é o Senhor",
+    "artist": "Adhemar de Campos",
+    "key": "A",
+    "bpm": "72",
+    "sections": [
+      {
+        "name": "Primeira Parte",
+        "content": "A | D | A | D\nG# | C#m | E\nBm - C#m - D - E (Passagem ascendente)",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Refrão",
+        "content": "A | C#m | D - C#m | Bm | E\nA | C#m | D - C#m | Bm | E\nD - E - A (Finalização)",
+        "type": "CHORDS",
+        "layout": "text"
+      }
+    ]
+  },
+  {
+    "id": 1775917001246,
+    "title": "Vim Para Adorar-te",
+    "artist": "Adoração & Adoradores",
+    "key": "E",
+    "bpm": "72",
+    "notes": "",
+    "sections": [
+      {
+        "name": "Intro",
+        "content": "E | B | E | A",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Primeira Parte",
+        "content": "E | B | E | A\nE | B | A",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Refrão",
+        "content": "E | B | E | A",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Ponte",
+        "content": "B | E | A | A",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      }
+    ]
+  },
+  {
+    "id": 1775917311576,
+    "title": "Cristo Venceu",
+    "artist": "Ipalpha",
+    "key": "A",
+    "bpm": "74",
+    "notes": "",
+    "sections": [
+      {
+        "name": "Intro",
+        "content": "A | D | A\nF#m | D | A",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Primeira Parte",
+        "content": "A | D | A\nF#m - E | D - C#\nD - E | A\n",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Refrão",
+        "content": "D | A | E | F#m\nE | D | A | F#m - E\nD | A | E | F#m\nD - E | A | D | A | F#m | D | A",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Ponte",
+        "content": "D | A | \nF#m | D - A",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Final",
+        "content": "A | D | A |\nF#m | D | A",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      }
+    ]
+  },
+  {
+    "id": 1775918240881,
+    "title": "É Ele",
+    "artist": "Drops",
+    "key": "Bb",
+    "bpm": "70",
+    "notes": "No tom de Bb, você terá o Eb (casa 6 da corda A ou casa 1 da corda D) e o F (casa 1 da corda E ou casa 8 da corda A). Escolha a região que mais te agrada para o timbre; as notas mais graves (casas baixas) tendem a soar mais encorpadas para esse estilo.",
+    "sections": [
+      {
+        "name": "Intro",
+        "content": "Eb | F | Gm\nDm | Eb | F",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Primeira Parte",
+        "content": "Bb | Gm | Eb\nBb | Gm | Eb | Bb",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Segunda Parte",
+        "content": "Eb | Gm | Bb | F\nEb | Gm | Bb | F",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Refrão",
+        "content": "Eb | F | Gm \nDm | Eb | F",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Primeira Parte (Alt)",
+        "content": "Bb | Bb | Gm | F | Eb\nBb | Bb | Gm | F | Eb",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "segunda Parte",
+        "content": "Eb | Gm | Bb | F\nEb | Gm | Bb | F",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "refrão",
+        "content": "Eb | F | Gm \nDm | Eb | F",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "ponte",
+        "content": "Bb | Bb | Gm | Gm | Eb | F\nBb | Bb | Gm | Gm | Eb | F | Bb",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Refrão (alt)",
+        "content": "Eb | F | Gm | Dm | Eb | F\nEb | F | Gm | Bb\nEb | Gm  | F",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "ponte",
+        "content": "Cm | (h)Gm - F | Gm | Bb\nCm | (h)Gm - F | Gm ",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "outro",
+        "content": "Eb | Bb | Bb | Cm | Eb ",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "finale",
+        "content": "Gm (h) F | Gm (h) F | Bb | Bb\nCm | Eb |",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Refrão final",
+        "content": "Eb | F | Gm | Dm | Eb | Gm(h)F\nEb | F | Gm | Bb | Eb | F",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      }
+    ]
+  },
+  {
+    "id": 1776126904875,
+    "title": "Desenvolvendo Amor",
+    "artist": "MORADA",
+    "key": "G",
+    "bpm": "75",
+    "notes": "A música é básicamente Em -> Bm -> Am -> Bm, variando apenas a levada",
+    "sections": [
+      {
+        "name": "Intro",
+        "content": "D - D# - Em (Subida cromática para o Em)",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Instrumental",
+        "content": "       Em             | Bm   |     Am                  | Bm \nG|-------------------------------------------------------------------|\nD|-------------------------------------------------------------------|\nA|--7--7---7---------------5-5-7-7----------------------------5-5-7-7|\nE|-------9---9--7-5-7--7-7---------5-3-5--5-3-5--5-3-7---7-7---------|",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Primeira Parte",
+        "content": "Em | G | Bm | Bm | Bm | Bm | Bm |G | Am \nBm | Bm | Bm | Bm | Bm | D | G | Am (na 2ª vez tocar: D | D# | E)",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Refrão",
+        "content": "       Em             | Bm   |     Am                  | Bm \nG|-------------------------------------------------------------------|\nD|-------------------------------------------------------------------|\nA|--7--7---7---------------5-5-7-7----------------------------5-5-7-7|\nE|-------9---9--7-5-7--7-7---------5-3-5--5-3-5--5-3-7---7-7---------|",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "solo",
+        "content": "G|--------12--14/16(h)14---12-11-------------------------------------|\nD|--12-14---------------------------12----  12-14--12----------------|\nA|--------------------------------------14-------------14--10--12(b)-|\nE|-------------------------------------------------------------------|",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Verso",
+        "content": "Em | G | Bm | Bm | Bm | Bm | Bm |G | Am \nE | E7(s)E9\nBm | Bm | Bm | Bm | Bm | D | G | Am (na 2ª vez tocar: D | D# | E)",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Refrão (igual)",
+        "content": "       Em             | Bm   |     Am                  | Bm \nG|-------------------------------------------------------------------|\nD|-------------------------------------------------------------------|\nA|--7--7---7---------------5-5-7-7----------------------------5-5-7-7|\nE|-------9---9--7-5-7--7-7---------5-3-5--5-3-5--5-3-7---7-7---------|",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Ponte",
+        "content": "G|-----------12-12--9-9-------------------------------|\nD|--7~--9~----------------10-10-----------7~---9------|\nA|-------------------------------12-12----------------|\nE|----------------------------------------------------|",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "RAP",
+        "content": "C | C | Em | Em | Gm | Gm | Bm | Gm\nE | Gm | Am",
+        "type": "CHORDS",
+        "layout": "text"
+      }
+    ]
+  },
+  {
+    "id": 1776128318899,
+    "title": "Dançar na Chuva",
+    "artist": "Fernandinho",
+    "key": "D",
+    "bpm": "128",
+    "notes": "No início, o baixo costuma sustentar o pedal em D enquanto os acordes mudam em cima",
+    "sections": [
+      {
+        "name": "Primeira Parte",
+        "content": "D | D | D | D\nD | D | G | G\nD | D | D | D\nD | D | G | F",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Refrão",
+        "content": "D | F# | B | F#\nG | F# | E | A\nD | F# | B | F#\nG | F# | E | A\nB (Sustenta para a virada)\nNa repetição:\nB (Convenção: B - B - C# - D)",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Ponte - Dance",
+        "content": "B | B | B | B\nE | F# | G | A\nE | F# | G | A",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Passagem",
+        "content": "(Notas isoladas): B\n(Descida cromática): \n D - F# - B - Bb \n D - F# - Bb - A \n D - F# - A - Ab - G - Gb - D",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "É proibido",
+        "content": "B | B | B | B\n(Riff): D - E - F# - A - Ab - E - F# (4x)",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Refrão Final",
+        "content": "D | F# | B | F#\nG | F# | E | A\nD | Bb (Inversão) | B | G# (Inversão)\nG | F# | E | A\nB (Finaliza)",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      }
+    ]
+  },
+  {
+    "id": 1776165607168,
+    "title": "Que Ruja o Leão",
+    "artist": "Isaias Saad",
+    "key": "F#m",
+    "bpm": "70",
+    "notes": "No refrão, para dar o efeito de que a \"terra estremece\", experimente tocar a tônica e a oitava (Ex: F# na corda E, casa 2 + F# na corda D, casa 4). Isso preenche muito o som no Power Trio ou em bandas maiores.",
+    "sections": [
+      {
+        "name": "Intro",
+        "content": "F# | E | D | B",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Primeira Parte",
+        "content": "F# | F# | F# | F# (O baixo mantém o pedal em F# mesmo nas mudanças de acorde)\nF# | F# | F# | F#",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Refrão",
+        "content": "E | F# | E | E\nD | B | F# | F# (Repete conforme a intensidade)",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Solo 1",
+        "content": "E | D | B | B\nF# | E | D | B",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Ponte",
+        "content": "F# | E | D | B\nF# | E | F# | E\nF# | E | D | B\nF# | E | F# | F#",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Solo 2",
+        "content": "E | D | B | B\nF# | E | D | B",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Passagem",
+        "content": "F# | F# | F# | F# (Sustente a nota pedal e vá crescendo a dinâmica)",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Refrão Final",
+        "content": "F# | F# | E | E\nD | B | F# | F#\nE | F# | E | E\nD | B | F# | F#",
+        "isTab": false,
+        "type": "CHORDS",
+        "layout": "text"
+      }
+    ]
+  },
+  {
+    "id": 1777934390052,
+    "title": "Até Outra Vez (bênção)",
+    "artist": "Projeto SOLA",
+    "key": "D",
+    "bpm": "132",
+    "notes": "",
+    "sections": [
+      {
+        "name": "VERSO",
+        "content": "D | D(h)E | \nD | D(h)E |\nG | A | Em",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Refrão",
+        "content": "D | G | Bm |\nG | F# | Em | D-A-D",
+        "type": "CHORDS",
+        "layout": "text"
+      }
+    ]
+  },
+  {
+    "id": 1778080755818,
+    "title": "Teu Reino",
+    "artist": "Cristo Vivo",
+    "key": "E",
+    "bpm": "140",
+    "notes": "Durante o solo, o foco sai do Mi (E) e vai para o C# (Dó sustenido). Sinta o peso dessa nota (Corda A, casa 4) para dar sustentação ao guitarrista.",
+    "sections": [
+      {
+        "name": "Primeira Parte",
+        "content": "E (x4)\nA | F# | E |",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Refrão",
+        "content": "A | F# | E | E8\nA | F# | E |",
+        "type": "CHORDS",
+        "layout": "text"
+      },
+      {
+        "name": "Solo",
+        "content": "C# | F# | E",
+        "type": "CHORDS",
+        "layout": "text"
+      }
+    ]
+  }
+];
+
+const INITIAL_PLAYLISTS = [
+  {
+    "id": 1777934106334,
+    "name": "Culto de domingo",
+    "songIds": [
+      1775917311576,
+      1775781915024,
+      1775918240881,
+      1778080755818
+    ]
+  },
+  {
+    "id": 1777934118201,
+    "name": "Culto de sábado",
+    "songIds": []
+  }
+];
+
         // --- Utilitários de Persistência ---
         function getLibrary() {
             try {
-                return JSON.parse(localStorage.getItem('bass_library') || '[]');
+                const stored = localStorage.getItem('bass_library');
+                if (!stored || stored === '[]') {
+                    localStorage.setItem('bass_library', JSON.stringify(INITIAL_LIBRARY));
+                    return INITIAL_LIBRARY;
+                }
+                return JSON.parse(stored);
             } catch (e) {
-                return [];
+                return INITIAL_LIBRARY;
             }
         }
 
@@ -1155,9 +1928,14 @@
 
         function getPlaylists() {
             try {
-                return JSON.parse(localStorage.getItem('bass_playlists') || '[]');
+                const stored = localStorage.getItem('bass_playlists');
+                if (!stored || stored === '[]') {
+                    localStorage.setItem('bass_playlists', JSON.stringify(INITIAL_PLAYLISTS));
+                    return INITIAL_PLAYLISTS;
+                }
+                return JSON.parse(stored);
             } catch (e) {
-                return [];
+                return INITIAL_PLAYLISTS;
             }
         }
 
