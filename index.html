@@ -620,200 +620,75 @@
         }
 
         // --- Renderização da Biblioteca ---
-        function renderLibrary() {
+                function renderLibrary() {
             const list = document.getElementById('library-list');
-            const search = document.getElementById('search-input').value.toLowerCase();
-            const keyFilter = document.getElementById('key-filter').value;
-            const sort = document.getElementById('sort-select').value;
+            if (!list) return;
+
+            const searchInput = document.getElementById('search-input');
+            const search = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+            const keySelect = document.getElementById('key-filter');
+            const sortSelect = document.getElementById('sort-select');
+            const sort = sortSelect ? sortSelect.value : 'title';
+
             let lib = getLibrary();
 
-            // Povoar dinamicamente o filtro de tons mantendo a seleção atual
-            const keySelect = document.getElementById('key-filter');
-            const currentSelectedKey = keySelect.value;
-            const existingKeys = [...new Set(lib.map(s => (s.key || '').trim().toUpperCase()).filter(k => k && k !== '-'))].sort();
-            
-            keySelect.innerHTML = '<option value="">TODOS OS TONS</option>' + 
-                existingKeys.map(k => `<option value="${k}">${k}</option>`).join('');
-            keySelect.value = currentSelectedKey;
+            if (keySelect) {
+                const currentSelectedKey = keySelect.value || '';
+                const existingKeys = [...new Set(lib.map(s => (s.key || '').trim().toUpperCase()).filter(k => k && k !== '-'))].sort();
+                
+                keySelect.innerHTML = '<option value="">TODOS OS TONS</option>' + 
+                    existingKeys.map(k => `<option value="${k}">${k}</option>`).join('');
+                if (existingKeys.includes(currentSelectedKey)) {
+                    keySelect.value = currentSelectedKey;
+                } else {
+                    keySelect.value = '';
+                }
+            }
 
-            // Filtros
+            const activeKeyFilter = keySelect ? keySelect.value : '';
+
             lib = lib.filter(s => {
-                const matchesSearch = (s.title || '').toLowerCase().includes(search) || 
+                const matchesSearch = !search || (s.title || '').toLowerCase().includes(search) || 
                                       (s.artist || '').toLowerCase().includes(search) ||
                                       (s.notes || '').toLowerCase().includes(search);
-                const matchesKey = keyFilter === "" || (s.key || '').toUpperCase() === keyFilter.toUpperCase();
+                const matchesKey = !activeKeyFilter || (s.key || '').toUpperCase() === activeKeyFilter.toUpperCase();
                 return matchesSearch && matchesKey;
             });
 
-            // Ordenação
             lib.sort((a, b) => {
-                if (sort === 'recent') return (b.updatedAt || b.id) - (a.updatedAt || a.id);
-                const valA = (a[sort] || '').toString().toLowerCase();
-                const valB = (b[sort] || '').toString().toLowerCase();
-                return valA.localeCompare(valB);
+                if (sort === 'title') return (a.title || '').localeCompare(b.title || '');
+                if (sort === 'artist') return (a.artist || '').localeCompare(b.artist || '');
+                if (sort === 'key') return (a.key || '').localeCompare(b.key || '');
+                if (sort === 'recent') return (b.updatedAt || 0) - (a.updatedAt || 0);
+                return 0;
             });
 
-            // Contador
-            document.getElementById('library-counter').innerText = `Mostrando ${lib.length} música(s)`;
+            if (lib.length === 0) {
+                list.innerHTML = `
+                    <div class="col-span-full bg-slate-800/40 p-8 rounded-2xl border border-slate-700/50 text-center">
+                        <p class="text-slate-400 font-bold text-sm mb-2">Nenhuma música encontrada</p>
+                        <button onclick="prepareCreate()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-xs font-extrabold">+ CRIAR PRIMEIRA MÚSICA</button>
+                    </div>`;
+                return;
+            }
 
-            // Renderizar Cards
-            list.innerHTML = lib.length ? lib.map(song => `
-                <div class="bg-slate-800/90 p-5 rounded-2xl border border-slate-700/80 flex justify-between items-center shadow-lg hover:border-blue-500/80 transition group">
-                    <div class="cursor-pointer flex-1 mr-4" onclick="openSheet(${song.id})">
-                        <h3 class="text-base font-extrabold uppercase tracking-tight text-slate-100 group-hover:text-blue-400 transition">${song.title}</h3>
-                        <div class="flex items-center gap-2 mt-1">
-                            <span class="text-slate-400 text-xs font-bold uppercase">${song.artist}</span>
-                            <span class="text-slate-600">•</span>
-                            <span class="bg-blue-950 text-blue-400 px-2 py-0.5 rounded text-[10px] font-black border border-blue-800/60">${song.key || '-'}</span>
-                            ${song.bpm ? `<span class="bg-amber-950 text-amber-400 px-2 py-0.5 rounded text-[10px] font-black border border-amber-800/60">${song.bpm} BPM</span>` : ''}
+            list.innerHTML = lib.map(song => `
+                <div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700/60 shadow-xl hover:border-slate-600 transition flex justify-between items-center group">
+                    <div class="cursor-pointer flex-1 min-w-0 pr-4" onclick="openSheet(${song.id})">
+                        <div class="flex items-center gap-2 mb-1">
+                            <h3 class="font-extrabold text-base text-slate-100 group-hover:text-blue-400 transition truncate">${song.title}</h3>
+                            <span class="bg-blue-950 text-blue-400 text-[10px] font-black px-2 py-0.5 rounded border border-blue-800 shrink-0">${song.key || '-'}</span>
                         </div>
+                        <p class="text-xs text-slate-400 font-medium truncate">${song.artist} ${song.bpm ? `• ${song.bpm} BPM` : ''}</p>
                     </div>
-                    <div class="flex gap-2">
-                        <button onclick="showPlaylistModal(${song.id})" class="bg-slate-700 hover:bg-blue-600 text-white w-8 h-8 rounded-lg font-extrabold text-sm transition" title="Adicionar à Playlist">+</button>
-                        <button onclick="editSong(${song.id})" class="bg-slate-700 hover:bg-slate-600 text-slate-300 w-8 h-8 rounded-lg font-bold text-xs transition" title="Editar">✏️</button>
-                        <button onclick="deleteSong(${song.id})" class="bg-slate-700 hover:bg-red-600 text-slate-300 hover:text-white w-8 h-8 rounded-lg font-bold text-xs transition" title="Excluir">✕</button>
-                    </div>
-                </div>
-            `).join('') : '<div class="col-span-full py-12 text-center text-slate-500 font-bold bg-slate-800/40 rounded-2xl border border-slate-800">Nenhum resultado encontrado na biblioteca</div>';
-        }
-
-        // --- Visualização da Cifra ---
-        function openSheet(id, playlistId = null) {
-            currentSongId = id;
-            transposeSteps = 0;
-            const lib = getLibrary();
-            const s = lib.find(x => x.id === id);
-            if (!s) return;
-            
-            currentBpm = parseInt(s.bpm) || 0;
-
-            if (playlistId) {
-                const pl = getPlaylists().find(p => p.id === playlistId);
-                if (pl) {
-                    activePlaylist = pl;
-                    activeSongIndex = pl.songIds.indexOf(id);
-                    const nav = document.getElementById('playlist-nav');
-                    if (nav) nav.classList.remove('hidden');
-                    updatePlaylistNavUI();
-                }
-            } else {
-                activePlaylist = null;
-                const nav = document.getElementById('playlist-nav');
-                if (nav) nav.classList.add('hidden');
-            }
-
-            renderSheetContent(id);
-            showView('sheet');
-        }
-
-        function renderSheetContent(id) {
-            const s = getLibrary().find(x => x.id === id);
-            if (!s) return;
-
-            const baseFontSizeClass = fontSizeDelta === -2 ? 'text-xs' :
-                                      fontSizeDelta === -1 ? 'text-sm' :
-                                      fontSizeDelta === 1  ? 'text-xl' :
-                                      fontSizeDelta === 2  ? 'text-2xl' :
-                                      fontSizeDelta === 3  ? 'text-3xl' : 'text-lg';
-
-            const displayKey = transposeSteps !== 0 ? 
-                `${transposeNote(s.key, transposeSteps)} (${s.key})` : (s.key || '-');
-
-            const sectionsHtml = (s.sections || []).map(sec => {
-                const type = sec.type || (sec.isTab ? 'TAB' : 'CHORDS');
-                const layout = sec.layout || 'text';
-                let contentText = sec.content || '';
-
-                if (type === 'CHORDS' && transposeSteps !== 0) {
-                    contentText = transposeChordText(contentText, transposeSteps);
-                }
-
-                let formatted = contentText;
-                if (layout === 'grid' && type === 'CHORDS') {
-                    formatted = contentText.split(/[|/ \n\r]+/)
-                        .filter(x => x.trim() !== '')
-                        .map(c => `<span class="chord-box">${c}</span>`)
-                        .join('');
-                }
-
-                return `
-                    <div class="mb-4 p-5 bg-slate-50 rounded-xl border-l-8 border-slate-300 break-inside-avoid shadow-sm">
-                        <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-2">${sec.name}</span>
-                        <div class="${type === 'TAB' ? 'text-xs font-mono' : `${baseFontSizeClass} font-mono`} font-extrabold whitespace-pre-wrap text-slate-900 leading-relaxed">${formatted}</div>
-                    </div>
-                `;
-            }).join('');
-
-            document.getElementById('sheet-content').innerHTML = `
-                <div class="flex justify-between items-end border-b-4 border-slate-900 mb-6 pb-3">
-                    <div>
-                        <h1 class="text-3xl md:text-4xl font-black uppercase tracking-tight text-slate-900">${s.title}</h1>
-                        <p class="text-base font-bold text-slate-500 italic mt-0.5">${s.artist}</p>
-                    </div>
-                    <div class="text-right font-black text-xs text-slate-900 uppercase">
-                        <div>Tom: <span class="text-blue-600">${displayKey}</span></div>
-                        ${s.bpm ? `<div class="mt-0.5 text-amber-700">${s.bpm} BPM</div>` : ''}
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button onclick="openPlaylistModal(${song.id})" class="p-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-slate-300 hover:text-white transition" title="Adicionar à Playlist">➕</button>
+                        <button onclick="editSong(${song.id})" class="p-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-slate-300 hover:text-white transition" title="Editar">✏️</button>
+                        <button onclick="deleteSong(${song.id})" class="p-2 bg-red-950/50 hover:bg-red-900/80 text-red-400 rounded-xl border border-red-800/50 transition" title="Excluir">🗑️</button>
                     </div>
                 </div>
-                ${s.notes ? `<div class="mb-6 p-4 bg-blue-50 text-blue-950 text-xs rounded-xl border border-blue-200 font-semibold leading-relaxed"><strong>💡 ANOTAÇÕES:</strong> ${s.notes}</div>` : ''}
-                <div id="sheet-grid" class="grid gap-4">${sectionsHtml}</div>
-            `;
-            setCols(currentCols);
-        }
-
-        function updatePlaylistNavUI() {
-            if (!activePlaylist) return;
-            const progress = document.getElementById('playlist-progress');
-            if (progress) {
-                progress.innerText = `${activeSongIndex + 1} de ${activePlaylist.songIds.length}`;
-            }
-            const btnPrev = document.getElementById('btn-prev-song');
-            const btnNext = document.getElementById('btn-next-song');
-            if (btnPrev) btnPrev.disabled = activeSongIndex <= 0;
-            if (btnNext) btnNext.disabled = activeSongIndex >= activePlaylist.songIds.length - 1;
-        }
-
-        function navPlaylist(dir) {
-            if (!activePlaylist) return;
-            let nextIdx = activeSongIndex + dir;
-            if (nextIdx >= 0 && nextIdx < activePlaylist.songIds.length) {
-                openSheet(activePlaylist.songIds[nextIdx], activePlaylist.id);
-            }
-        }
-
-        // --- Gestão de Playlists ---
-        let draggedPlaylistSong = null;
-
-        function handlePlaylistDragStart(e, plId, index) {
-            draggedPlaylistSong = { plId, index };
-            e.dataTransfer.effectAllowed = 'move';
-            e.currentTarget.classList.add('opacity-40');
-        }
-
-        function handlePlaylistDragOver(e) {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-        }
-
-        function handlePlaylistDrop(e, plId, targetIndex) {
-            e.preventDefault();
-            if (!draggedPlaylistSong || draggedPlaylistSong.plId !== plId || draggedPlaylistSong.index === targetIndex) return;
-            movePlaylistItem(plId, draggedPlaylistSong.index, targetIndex);
-            draggedPlaylistSong = null;
-        }
-
-        function movePlaylistItem(plId, fromIdx, toIdx) {
-            let pls = getPlaylists();
-            const pl = pls.find(p => p.id === plId);
-            if (!pl) return;
-            if (toIdx < 0 || toIdx >= pl.songIds.length) return;
-
-            const [moved] = pl.songIds.splice(fromIdx, 1);
-            pl.songIds.splice(toIdx, 0, moved);
-
-            savePlaylists(pls);
-            renderPlaylists();
-            showToast('Ordem da playlist atualizada!', 'info');
+            `).join('');
         }
 
         function renderPlaylists() {
@@ -2258,7 +2133,7 @@ const INITIAL_PLAYLISTS = [
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js?v=3.8').then(reg => {
+                navigator.serviceWorker.register('./sw.js?v=3.9').then(reg => {
                     console.log('Service Worker registrado:', reg.scope);
                 }).catch(err => {
                     console.warn('Erro ao registrar Service Worker:', err);
@@ -2267,12 +2142,19 @@ const INITIAL_PLAYLISTS = [
         }
 
         // --- Inicialização ---
-        try {
-            initCloudSync();
-        } catch (e) {
-            console.warn('initCloudSync warning:', e);
+        function initApp() {
+            try {
+                initCloudSync();
+            } catch (e) {
+                console.warn('initCloudSync warning:', e);
+            }
+            showView('library');
         }
-        showView('library');
-    </script>
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initApp);
+        } else {
+            initApp();
+        }</script>
 </body>
 </html>
