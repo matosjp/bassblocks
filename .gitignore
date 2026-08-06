@@ -1,0 +1,10 @@
+# Ignore browser saved pages and files
+*_files/
+*.html.tmp
+
+# Ignore temporary backup files if desired
+*.json.bak
+patch_*.py
+update_*.py
+add_*.py
+seed_*.js
