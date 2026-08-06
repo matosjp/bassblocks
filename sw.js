@@ -2,7 +2,6 @@ const CACHE_NAME = 'bassblocks-v3.7';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
-  './bassblocks.html',
   './manifest.json',
   './icon-192.jpg',
   './icon-512.jpg',
@@ -48,7 +47,7 @@ self.addEventListener('fetch', event => {
       }
       return fetch(event.request).catch(() => {
         if (event.request.mode === 'navigate') {
-          return caches.match('./index.html') || caches.match('./bassblocks.html');
+          return caches.match('./index.html');
         }
       });
     })
