@@ -430,7 +430,7 @@
 
         function transposeChordText(text, semitones) {
             if (!semitones) return text;
-            return text.replace(/\b([A-G][#b]?)([^/\s|\-\n\r]*)(?:\/([A-G][#b]?)([^/\s|\-\n\r]*))?\b/g, (match, r1, s1, r2, s2) => {
+            return text.replace(/\b([A-G][#b]?)([^/\s|\-\n\r]*)(?:\/([A-G][#b]?)([^/\s|\-\n\r]*))?/g, (match, r1, s1, r2, s2) => {
                 let res = transposeNote(r1, semitones) + (s1 || '');
                 if (r2) {
                     res += '/' + transposeNote(r2, semitones) + (s2 || '');
