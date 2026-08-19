@@ -1,10 +1,12 @@
-const CACHE_NAME = 'bassblocks-v3.13';
+const CACHE_NAME = 'bassblocks-v3.17';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './manifest.json',
   './icon-192.jpg',
   './icon-512.jpg',
+  './cat_bass_doodle.jpg',
+  './cat_headphones_doodle.jpg',
   'https://cdn.tailwindcss.com',
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap'
 ];
@@ -32,23 +34,46 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-  if (event.request.url.includes('ntfy.sh')) {
-    return; // Bypass Service Worker cache for live Cloud Sync API
+  // Ignora requisições que não sejam do tipo GET (necessário para APIs/Sync e segurança do cache)
+  if (event.request.method !== 'GET') {
+    return;
   }
+
+  // Ignora cache para requisições de sincronização na nuvem em tempo real
+  if (event.request.url.includes('ntfy.sh')) {
+    return;
+  }
+
   event.respondWith(
-    caches.match(event.request).then(cachedResponse => {
+    caches.match(event.request, { ignoreSearch: true }).then(cachedResponse => {
       if (cachedResponse) {
+        // Stale-while-revalidate: Serve o cache instantaneamente e atualiza em segundo plano
         fetch(event.request).then(networkResponse => {
           if (networkResponse && networkResponse.status === 200) {
-            caches.open(CACHE_NAME).then(cache => cache.put(event.request, networkResponse));
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(event.request, networkResponse.clone());
+            });
           }
         }).catch(() => {});
         return cachedResponse;
       }
-      return fetch(event.request).catch(() => {
-        if (event.request.mode === 'navigate') {
-          return caches.match('./index.html');
+
+      // Cache miss: busca da rede
+      return fetch(event.request).then(networkResponse => {
+        if (networkResponse && networkResponse.status === 200) {
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, networkResponse.clone());
+          });
         }
+        return networkResponse;
+      }).catch(err => {
+        // Se estiver offline e for uma navegação de página, serve o index.html
+        if (event.request.mode === 'navigate') {
+          return caches.match('./index.html', { ignoreSearch: true }) ||
+                 caches.match('index.html', { ignoreSearch: true }) ||
+                 caches.match('./', { ignoreSearch: true });
+        }
+        throw err;
       });
     })
   );

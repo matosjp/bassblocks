@@ -8,3 +8,14 @@ patch_*.py
 update_*.py
 add_*.py
 seed_*.js
+
+# Agent workflow files
+tmp/
+.env
+credential.json
+token.json
+AGENTS.md
+GEMINI.md
+CLAUDE.md
+directives/
+execution/
