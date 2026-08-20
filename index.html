@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,15 +11,24 @@
     <link rel="icon" type="image/jpeg" href="icon-192.jpg">
     <link rel="apple-touch-icon" href="icon-192.jpg">
     <link rel="manifest" href="manifest.json">
-        <title>BassBlocks v3.7</title>
+    <title>BassBlocks v3.7</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap"
+        rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f9f8f3; color: #1c1b18; }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9f8f3;
+            color: #1c1b18;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
         /* Neobrutalism UI style elements */
         .neo-card {
             background-color: #ffffff;
@@ -27,6 +37,7 @@
             box-shadow: 4px 4px 0px #1c1b18;
             transition: transform 0.1s ease, box-shadow 0.1s ease;
         }
+
         .neo-btn {
             background-color: #ffc72c;
             color: #1c1b18;
@@ -37,15 +48,18 @@
             transition: transform 0.1s ease, box-shadow 0.1s ease;
             cursor: pointer;
         }
+
         .neo-btn:hover {
             transform: translate(-1px, -1px);
             box-shadow: 4px 4px 0px #1c1b18;
             background-color: #ffd24d;
         }
+
         .neo-btn:active {
             transform: translate(2px, 2px);
             box-shadow: 1px 1px 0px #1c1b18;
         }
+
         .neo-btn-secondary {
             background-color: #ffffff;
             color: #1c1b18;
@@ -56,15 +70,18 @@
             transition: transform 0.1s ease, box-shadow 0.1s ease;
             cursor: pointer;
         }
+
         .neo-btn-secondary:hover {
             transform: translate(-1px, -1px);
             box-shadow: 4px 4px 0px #1c1b18;
             background-color: #f3f2ea;
         }
+
         .neo-btn-secondary:active {
             transform: translate(2px, 2px);
             box-shadow: 1px 1px 0px #1c1b18;
         }
+
         .neo-btn-accent {
             background-color: #ff8b3d;
             color: #1c1b18;
@@ -75,15 +92,18 @@
             transition: transform 0.1s ease, box-shadow 0.1s ease;
             cursor: pointer;
         }
+
         .neo-btn-accent:hover {
             transform: translate(-1px, -1px);
             box-shadow: 4px 4px 0px #1c1b18;
             background-color: #ff9b57;
         }
+
         .neo-btn-accent:active {
             transform: translate(2px, 2px);
             box-shadow: 1px 1px 0px #1c1b18;
         }
+
         .neo-btn-danger {
             background-color: #ff5252;
             color: #ffffff;
@@ -94,15 +114,18 @@
             transition: transform 0.1s ease, box-shadow 0.1s ease;
             cursor: pointer;
         }
+
         .neo-btn-danger:hover {
             transform: translate(-1px, -1px);
             box-shadow: 4px 4px 0px #1c1b18;
             background-color: #ff6e6e;
         }
+
         .neo-btn-danger:active {
             transform: translate(2px, 2px);
             box-shadow: 1px 1px 0px #1c1b18;
         }
+
         .neo-btn-green {
             background-color: #4caf50;
             color: #ffffff;
@@ -113,15 +136,18 @@
             transition: transform 0.1s ease, box-shadow 0.1s ease;
             cursor: pointer;
         }
+
         .neo-btn-green:hover {
             transform: translate(-1px, -1px);
             box-shadow: 4px 4px 0px #1c1b18;
             background-color: #5cbf60;
         }
+
         .neo-btn-green:active {
             transform: translate(2px, 2px);
             box-shadow: 1px 1px 0px #1c1b18;
         }
+
         .neo-input {
             background-color: #ffffff;
             border: 3px solid #1c1b18;
@@ -132,9 +158,11 @@
             outline: none;
             transition: box-shadow 0.2s ease;
         }
+
         .neo-input:focus {
             box-shadow: 3px 3px 0px #ffc72c;
         }
+
         .chord-box {
             background: #ffffff;
             border: 2px solid #1c1b18;
@@ -149,54 +177,111 @@
             font-size: 0.95em;
             box-shadow: 2px 2px 0px #1c1b18;
         }
-        .metronome-flash { animation: flash 0.12s ease-out; }
-        @keyframes flash { from { background-color: #ff5252; transform: scale(1.3); } to { background-color: #cbd5e1; transform: scale(1); } }
-        @media print { 
-            .no-print { display: none !important; } 
-            body { background: white !important; color: black !important; padding: 0 !important; }
-            #sheet-content { background: white !important; color: black !important; box-shadow: none !important; border: none !important; padding: 0 !important; } 
-            .chord-box { border-color: #1c1b18 !important; background: white !important; box-shadow: none !important; }
+
+        .metronome-flash {
+            animation: flash 0.12s ease-out;
+        }
+
+        @keyframes flash {
+            from {
+                background-color: #ff5252;
+                transform: scale(1.3);
+            }
+
+            to {
+                background-color: #cbd5e1;
+                transform: scale(1);
+            }
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+
+            body {
+                background: white !important;
+                color: black !important;
+                padding: 0 !important;
+            }
+
+            #sheet-content {
+                background: white !important;
+                color: black !important;
+                box-shadow: none !important;
+                border: none !important;
+                padding: 0 !important;
+            }
+
+            .chord-box {
+                border-color: #1c1b18 !important;
+                background: white !important;
+                box-shadow: none !important;
+            }
         }
     </style>
 </head>
+
 <body class="p-4 md:p-8 min-h-screen flex flex-col">
 
     <!-- Ilustrações decorativas de fundo (se mesclando com o BG) -->
-    <div class="fixed bottom-0 left-0 w-64 h-64 md:w-96 md:h-96 pointer-events-none select-none z-[-1] opacity-[0.14] mix-blend-multiply no-print">
+    <div
+        class="fixed bottom-0 left-0 w-64 h-64 md:w-96 md:h-96 pointer-events-none select-none z-[-1] opacity-[0.14] mix-blend-multiply no-print">
         <img src="cat_bass_doodle.jpg" class="w-full h-full object-contain" alt="">
     </div>
-    <div class="fixed bottom-0 right-0 w-64 h-64 md:w-96 md:h-96 pointer-events-none select-none z-[-1] opacity-[0.14] mix-blend-multiply no-print">
+    <div
+        class="fixed bottom-0 right-0 w-64 h-64 md:w-96 md:h-96 pointer-events-none select-none z-[-1] opacity-[0.14] mix-blend-multiply no-print">
         <img src="cat_headphones_doodle.jpg" class="w-full h-full object-contain" alt="">
     </div>
 
     <!-- Navegação Principal -->
-    <nav class="max-w-6xl w-full mx-auto mb-8 flex flex-wrap justify-between items-center no-print border-b-3 border-[#1c1b18] pb-4 gap-4">
+    <nav
+        class="max-w-6xl w-full mx-auto mb-8 flex flex-wrap justify-between items-center no-print border-b-3 border-[#1c1b18] pb-4 gap-4">
         <div class="flex items-center gap-3 cursor-pointer" onclick="showView('library')">
-            <div class="bg-[#ffc72c] text-[#1c1b18] px-3 py-1.5 rounded-xl font-black text-xl tracking-tighter border-3 border-[#1c1b18] shadow-[3px_3px_0px_#1c1b18]">BB</div>
-            <h1 class="text-2xl font-black tracking-tight text-[#1c1b18]">BASS<span class="text-[#ff8b3d]">BLOCKS</span> <span class="text-[10px] bg-white text-[#1c1b18] px-2 py-0.5 rounded-lg border-2 border-[#1c1b18] font-bold ml-1">v3.17 🐱</span></h1>
+            <div
+                class="bg-[#ffc72c] text-[#1c1b18] px-3 py-1.5 rounded-xl font-black text-xl tracking-tighter border-3 border-[#1c1b18] shadow-[3px_3px_0px_#1c1b18]">
+                BB</div>
+            <h1 class="text-2xl font-black tracking-tight text-[#1c1b18]">BASS<span class="text-[#ff8b3d]">BLOCKS</span>
+                <span
+                    class="text-[10px] bg-white text-[#1c1b18] px-2 py-0.5 rounded-lg border-2 border-[#1c1b18] font-bold ml-1">v3.18
+                    🐱</span></h1>
         </div>
         <div class="flex flex-wrap gap-4 text-xs font-black uppercase tracking-wider items-center text-[#1c1b18]">
-            <button type="button" id="nav-btn-create" onclick="prepareCreate()" class="nav-link hover:text-[#ff8b3d] transition py-1">Criar</button>
-            <button type="button" id="nav-btn-library" onclick="showView('library')" class="nav-link hover:text-[#ff8b3d] transition py-1">Biblioteca</button>
-            <button type="button" id="nav-btn-playlists" onclick="showView('playlists')" class="nav-link hover:text-[#ff8b3d] transition py-1">Playlists</button>
+            <button type="button" id="nav-btn-create" onclick="prepareCreate()"
+                class="nav-link hover:text-[#ff8b3d] transition py-1">Criar</button>
+            <button type="button" id="nav-btn-library" onclick="showView('library')"
+                class="nav-link hover:text-[#ff8b3d] transition py-1">Biblioteca</button>
+            <button type="button" id="nav-btn-playlists" onclick="showView('playlists')"
+                class="nav-link hover:text-[#ff8b3d] transition py-1">Playlists</button>
             <div class="h-4 w-[2px] bg-[#1c1b18] mx-1"></div>
-            <button type="button" onclick="exportData()" class="text-[#1c1b18] hover:text-[#ff8b3d] transition flex items-center gap-1" title="Exportar backup em JSON">
+            <button type="button" onclick="exportData()"
+                class="text-[#1c1b18] hover:text-[#ff8b3d] transition flex items-center gap-1"
+                title="Exportar backup em JSON">
                 <span>Backup</span>
             </button>
-            <button type="button" onclick="document.getElementById('import-input').click()" class="text-[#1c1b18] hover:text-[#ff8b3d] transition flex items-center gap-1" title="Importar arquivo de backup JSON">
+            <button type="button" onclick="document.getElementById('import-input').click()"
+                class="text-[#1c1b18] hover:text-[#ff8b3d] transition flex items-center gap-1"
+                title="Importar arquivo de backup JSON">
                 <span>Importar</span>
             </button>
             <input type="file" id="import-input" class="hidden" accept=".json" onchange="importData(this)">
             <div class="h-4 w-[2px] bg-[#1c1b18] mx-1"></div>
-            <button type="button" onclick="document.getElementById('import-cifra-input').click()" class="text-[#ff8b3d] hover:underline transition flex items-center gap-1 font-bold" title="Importar Cifra de Guitarra em HTML ou TXT">
+            <button type="button" onclick="document.getElementById('import-cifra-input').click()"
+                class="text-[#ff8b3d] hover:underline transition flex items-center gap-1 font-bold"
+                title="Importar Cifra de Guitarra em HTML ou TXT">
                 <span>⚡ Cifra HTML</span>
             </button>
-            <input type="file" id="import-cifra-input" class="hidden" accept=".html,.htm,.txt" onchange="handleCifraImportFile(this)">
-            <button type="button" id="pwa-install-btn" class="hidden text-[#ffc72c] hover:bg-[#1c1b18]/10 font-extrabold transition flex items-center gap-1 bg-[#1c1b18] px-2.5 py-1 rounded-xl border-2 border-[#1c1b18] shadow-[2px_2px_0px_#ffc72c]" onclick="installPWA()">
+            <input type="file" id="import-cifra-input" class="hidden" accept=".html,.htm,.txt"
+                onchange="handleCifraImportFile(this)">
+            <button type="button" id="pwa-install-btn"
+                class="hidden text-[#ffc72c] hover:bg-[#1c1b18]/10 font-extrabold transition flex items-center gap-1 bg-[#1c1b18] px-2.5 py-1 rounded-xl border-2 border-[#1c1b18] shadow-[2px_2px_0px_#ffc72c]"
+                onclick="installPWA()">
                 <span>📲 Instalar App</span>
             </button>
             <div class="h-4 w-[2px] bg-[#1c1b18] mx-1"></div>
-            <button type="button" onclick="openCloudSyncModal()" id="cloud-sync-nav-btn" class="text-white hover:bg-emerald-700 font-extrabold transition flex items-center gap-1 bg-emerald-600 px-2.5 py-1 rounded-xl border-2 border-[#1c1b18] shadow-[2px_2px_0px_#1c1b18]" title="Sincronizar Músicas em Nuvem">
+            <button type="button" onclick="openCloudSyncModal()" id="cloud-sync-nav-btn"
+                class="text-white hover:bg-emerald-700 font-extrabold transition flex items-center gap-1 bg-emerald-600 px-2.5 py-1 rounded-xl border-2 border-[#1c1b18] shadow-[2px_2px_0px_#1c1b18]"
+                title="Sincronizar Músicas em Nuvem">
                 <span id="cloud-sync-nav-text">☁️ Nuvem</span>
             </button>
         </div>
@@ -206,43 +291,59 @@
     <main id="view-create" class="max-w-4xl w-full mx-auto space-y-6 flex-1">
         <div class="neo-card p-6">
             <div class="flex justify-between items-center mb-4">
-                <h2 id="create-view-title" class="text-sm font-black uppercase tracking-widest text-[#1c1b18]">Nova Música</h2>
-                <button onclick="showView('library')" class="text-xs font-bold text-slate-500 hover:text-slate-900 uppercase">CANCELAR</button>
+                <h2 id="create-view-title" class="text-sm font-black uppercase tracking-widest text-[#1c1b18]">Nova
+                    Música</h2>
+                <button onclick="showView('library')"
+                    class="text-xs font-bold text-slate-500 hover:text-slate-900 uppercase">CANCELAR</button>
             </div>
             <input type="hidden" id="edit-id">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <input type="text" id="title" placeholder="Nome da Música" class="bg-white border-2 border-[#1c1b18] focus:border-[#ffc72c] p-3 rounded-xl col-span-2 outline-none font-bold text-[#1c1b18] placeholder-slate-400 transition shadow-[2px_2px_0px_#1c1b18]">
-                <input type="text" id="artist" placeholder="Artista / Banda" class="bg-white border-2 border-[#1c1b18] focus:border-[#ffc72c] p-3 rounded-xl outline-none font-bold text-[#1c1b18] placeholder-slate-400 transition shadow-[2px_2px_0px_#1c1b18]">
+                <input type="text" id="title" placeholder="Nome da Música"
+                    class="bg-white border-2 border-[#1c1b18] focus:border-[#ffc72c] p-3 rounded-xl col-span-2 outline-none font-bold text-[#1c1b18] placeholder-slate-400 transition shadow-[2px_2px_0px_#1c1b18]">
+                <input type="text" id="artist" placeholder="Artista / Banda"
+                    class="bg-white border-2 border-[#1c1b18] focus:border-[#ffc72c] p-3 rounded-xl outline-none font-bold text-[#1c1b18] placeholder-slate-400 transition shadow-[2px_2px_0px_#1c1b18]">
                 <div class="flex gap-2">
-                    <input type="text" id="key" placeholder="Tom (Ex: C, Am)" class="bg-white border-2 border-[#1c1b18] focus:border-[#ffc72c] p-3 rounded-xl w-full text-center font-bold text-[#ff8b3d] placeholder-slate-400 transition uppercase shadow-[2px_2px_0px_#1c1b18]">
-                    <input type="number" id="bpm_input" placeholder="BPM" min="30" max="300" class="bg-white border-2 border-[#1c1b18] focus:border-[#ffc72c] p-3 rounded-xl w-full text-center font-bold text-amber-600 placeholder-slate-400 transition shadow-[2px_2px_0px_#1c1b18]">
+                    <input type="text" id="key" placeholder="Tom (Ex: C, Am)"
+                        class="bg-white border-2 border-[#1c1b18] focus:border-[#ffc72c] p-3 rounded-xl w-full text-center font-bold text-[#ff8b3d] placeholder-slate-400 transition uppercase shadow-[2px_2px_0px_#1c1b18]">
+                    <input type="number" id="bpm_input" placeholder="BPM" min="30" max="300"
+                        class="bg-white border-2 border-[#1c1b18] focus:border-[#ffc72c] p-3 rounded-xl w-full text-center font-bold text-amber-600 placeholder-slate-400 transition shadow-[2px_2px_0px_#1c1b18]">
                 </div>
             </div>
-            <textarea id="notes" placeholder="Anotações gerais (afinação, tom original, dicas para o baixo...)" class="w-full mt-4 bg-white border-2 border-[#1c1b18] focus:border-[#ffc72c] p-3 rounded-xl text-sm text-[#1c1b18] h-20 outline-none resize-y placeholder-slate-400 transition font-bold shadow-[2px_2px_0px_#1c1b18]"></textarea>
+            <textarea id="notes" placeholder="Anotações gerais (afinação, tom original, dicas para o baixo...)"
+                class="w-full mt-4 bg-white border-2 border-[#1c1b18] focus:border-[#ffc72c] p-3 rounded-xl text-sm text-[#1c1b18] h-20 outline-none resize-y placeholder-slate-400 transition font-bold shadow-[2px_2px_0px_#1c1b18]"></textarea>
         </div>
 
         <div id="sections-container" class="space-y-4"></div>
 
         <div class="flex flex-wrap gap-3 pt-4 border-t-2 border-[#1c1b18] items-center justify-between">
             <div class="flex gap-2">
-                <button onclick="addSectionRow('CHORDS')" class="neo-btn-secondary px-4 py-2 text-xs font-bold flex items-center gap-1">+ ACORDES</button>
-                <button onclick="addSectionRow('TAB')" class="neo-btn bg-[#ff8b3d] px-4 py-2 text-xs font-bold flex items-center gap-1">+ TABLATURA</button>
+                <button onclick="addSectionRow('CHORDS')"
+                    class="neo-btn-secondary px-4 py-2 text-xs font-bold flex items-center gap-1">+ ACORDES</button>
+                <button onclick="addSectionRow('TAB')"
+                    class="neo-btn bg-[#ff8b3d] px-4 py-2 text-xs font-bold flex items-center gap-1">+
+                    TABLATURA</button>
             </div>
-            <button onclick="saveSong()" id="save-btn" class="neo-btn px-8 py-2.5 text-xs tracking-wider">Salvar Música</button>
+            <button onclick="saveSong()" id="save-btn" class="neo-btn px-8 py-2.5 text-xs tracking-wider">Salvar
+                Música</button>
         </div>
     </main>
 
     <!-- Tela: Biblioteca -->
     <main id="view-library" class="max-w-4xl w-full mx-auto hidden space-y-6 flex-1">
-        <div class="flex flex-col md:flex-row gap-3 bg-white p-4 rounded-2xl border-3 border-[#1c1b18] shadow-[4px_4px_0px_#1c1b18]">
+        <div
+            class="flex flex-col md:flex-row gap-3 bg-white p-4 rounded-2xl border-3 border-[#1c1b18] shadow-[4px_4px_0px_#1c1b18]">
             <div class="relative flex-1">
-                <input type="text" id="search-input" oninput="renderLibrary()" placeholder="🔍 Buscar por música, artista ou anotação..." class="w-full bg-white border-2 border-[#1c1b18] focus:border-[#ffc72c] p-3 rounded-xl text-sm outline-none text-[#1c1b18] placeholder-slate-400 transition font-bold shadow-[2px_2px_0px_#1c1b18]">
+                <input type="text" id="search-input" oninput="renderLibrary()"
+                    placeholder="🔍 Buscar por música, artista ou anotação..."
+                    class="w-full bg-white border-2 border-[#1c1b18] focus:border-[#ffc72c] p-3 rounded-xl text-sm outline-none text-[#1c1b18] placeholder-slate-400 transition font-bold shadow-[2px_2px_0px_#1c1b18]">
             </div>
             <div class="flex gap-2">
-                <select id="key-filter" onchange="renderLibrary()" class="bg-white border-2 border-[#1c1b18] focus:border-[#ffc72c] p-3 rounded-xl text-xs uppercase font-extrabold text-[#ff8b3d] outline-none cursor-pointer shadow-[2px_2px_0px_#1c1b18]">
+                <select id="key-filter" onchange="renderLibrary()"
+                    class="bg-white border-2 border-[#1c1b18] focus:border-[#ffc72c] p-3 rounded-xl text-xs uppercase font-extrabold text-[#ff8b3d] outline-none cursor-pointer shadow-[2px_2px_0px_#1c1b18]">
                     <option value="">TODOS OS TONS</option>
                 </select>
-                <select id="sort-select" onchange="renderLibrary()" class="bg-white border-2 border-[#1c1b18] focus:border-[#ffc72c] p-3 rounded-xl text-xs uppercase font-extrabold text-[#1c1b18] outline-none cursor-pointer shadow-[2px_2px_0px_#1c1b18]">
+                <select id="sort-select" onchange="renderLibrary()"
+                    class="bg-white border-2 border-[#1c1b18] focus:border-[#ffc72c] p-3 rounded-xl text-xs uppercase font-extrabold text-[#1c1b18] outline-none cursor-pointer shadow-[2px_2px_0px_#1c1b18]">
                     <option value="title">A-Z (TÍTULO)</option>
                     <option value="artist">ARTISTA</option>
                     <option value="key">TOM</option>
@@ -253,9 +354,10 @@
 
         <div class="flex justify-between items-center px-1">
             <span id="library-counter" class="text-xs font-black text-slate-500 uppercase tracking-wider"></span>
-            <button onclick="prepareCreate()" class="text-xs font-black text-[#ff8b3d] hover:underline flex items-center gap-1">+ NOVA MÚSICA</button>
+            <button onclick="prepareCreate()"
+                class="text-xs font-black text-[#ff8b3d] hover:underline flex items-center gap-1">+ NOVA MÚSICA</button>
         </div>
-    
+
         <div id="library-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
     </main>
 
@@ -273,57 +375,99 @@
 
     <!-- Tela: Visualização da Cifra (Sheet View) -->
     <main id="view-sheet" class="max-w-7xl w-full mx-auto hidden flex-1">
-        <div class="no-print flex flex-wrap justify-between items-center mb-6 gap-4 bg-white p-4 rounded-2xl border-3 border-[#1c1b18] shadow-[4px_4px_0px_#1c1b18]">
+        <div
+            class="no-print flex flex-wrap justify-between items-center mb-6 gap-4 bg-white p-4 rounded-2xl border-3 border-[#1c1b18] shadow-[4px_4px_0px_#1c1b18]">
             <div class="flex flex-wrap gap-3 items-center">
-                <button onclick="showView('library')" class="text-[#1c1b18] hover:text-[#ff8b3d] font-black text-xs uppercase transition flex items-center gap-1">
+                <button onclick="showView('library')"
+                    class="text-[#1c1b18] hover:text-[#ff8b3d] font-black text-xs uppercase transition flex items-center gap-1">
                     ← Voltar
                 </button>
                 <div id="playlist-nav" class="flex gap-2 items-center border-l-2 border-[#1c1b18] pl-3 hidden">
-                    <button id="btn-prev-song" onclick="navPlaylist(-1)" class="neo-btn-secondary px-3 py-1.5 rounded-lg text-[10px] font-black border-2 border-[#1c1b18] shadow-[2px_2px_0px_#1c1b18] transition">← ANTERIOR</button>
+                    <button id="btn-prev-song" onclick="navPlaylist(-1)"
+                        class="neo-btn-secondary px-3 py-1.5 rounded-lg text-[10px] font-black border-2 border-[#1c1b18] shadow-[2px_2px_0px_#1c1b18] transition">←
+                        ANTERIOR</button>
                     <span id="playlist-progress" class="text-[10px] font-black text-[#ff8b3d] px-1"></span>
-                    <button id="btn-next-song" onclick="navPlaylist(1)" class="neo-btn-secondary px-3 py-1.5 rounded-lg text-[10px] font-black border-2 border-[#1c1b18] shadow-[2px_2px_0px_#1c1b18] transition">PRÓXIMA →</button>
+                    <button id="btn-next-song" onclick="navPlaylist(1)"
+                        class="neo-btn-secondary px-3 py-1.5 rounded-lg text-[10px] font-black border-2 border-[#1c1b18] shadow-[2px_2px_0px_#1c1b18] transition">PRÓXIMA
+                        →</button>
                 </div>
             </div>
-            
+
             <!-- Controles Musicais: Transposição, Colunas, Fonte, Metrônomo -->
             <div class="flex flex-wrap gap-3 items-center">
                 <!-- Transpositor -->
-                <div class="flex gap-1 items-center bg-white p-1 rounded-xl border-2 border-[#1c1b18] shadow-[2px_2px_0px_#1c1b18]">
+                <div
+                    class="flex gap-1 items-center bg-white p-1 rounded-xl border-2 border-[#1c1b18] shadow-[2px_2px_0px_#1c1b18]">
                     <span class="text-[9px] font-black text-slate-500 mx-1 uppercase">Tom:</span>
-                    <button onclick="transposeSong(-1)" class="w-7 h-7 bg-white hover:bg-slate-100 rounded-lg text-xs font-black border-2 border-[#1c1b18] text-[#1c1b18] transition" title="Diminuir 1 semitom">-1</button>
-                    <button onclick="resetTransposition()" id="trans-badge" class="px-2 py-0.5 bg-[#ffc72c] text-[#1c1b18] rounded-md text-[10px] font-black border-2 border-[#1c1b18]" title="Resetar tom original">0</button>
-                    <button onclick="transposeSong(1)" class="w-7 h-7 bg-white hover:bg-slate-100 rounded-lg text-xs font-black border-2 border-[#1c1b18] text-[#1c1b18] transition" title="Aumentar 1 semitom">+1</button>
+                    <button onclick="transposeSong(-1)"
+                        class="w-7 h-7 bg-white hover:bg-slate-100 rounded-lg text-xs font-black border-2 border-[#1c1b18] text-[#1c1b18] transition"
+                        title="Diminuir 1 semitom">-1</button>
+                    <button onclick="resetTransposition()" id="trans-badge"
+                        class="px-2 py-0.5 bg-[#ffc72c] text-[#1c1b18] rounded-md text-[10px] font-black border-2 border-[#1c1b18]"
+                        title="Resetar tom original">0</button>
+                    <button onclick="transposeSong(1)"
+                        class="w-7 h-7 bg-white hover:bg-slate-100 rounded-lg text-xs font-black border-2 border-[#1c1b18] text-[#1c1b18] transition"
+                        title="Aumentar 1 semitom">+1</button>
                 </div>
 
                 <!-- Acidentes (Sustenido / Bemol) -->
-                <button onclick="toggleEnharmonicPref()" id="btn-enharmonic" class="px-2.5 py-1.5 bg-white border-2 border-[#1c1b18] rounded-xl text-[10px] font-extrabold text-[#1c1b18] shadow-[2px_2px_0px_#1c1b18] transition" title="Alternar entre Auto, Sustenidos (#) e Bemóis (b)">♯/♭ AUTO</button>
+                <button onclick="toggleEnharmonicPref()" id="btn-enharmonic"
+                    class="px-2.5 py-1.5 bg-white border-2 border-[#1c1b18] rounded-xl text-[10px] font-extrabold text-[#1c1b18] shadow-[2px_2px_0px_#1c1b18] transition"
+                    title="Alternar entre Auto, Sustenidos (#) e Bemóis (b)">♯/♭ AUTO</button>
 
                 <!-- Colunas -->
-                <div class="flex gap-1 items-center bg-white p-1 rounded-xl border-2 border-[#1c1b18] shadow-[2px_2px_0px_#1c1b18]">
+                <div
+                    class="flex gap-1 items-center bg-white p-1 rounded-xl border-2 border-[#1c1b18] shadow-[2px_2px_0px_#1c1b18]">
                     <span class="text-[9px] font-black text-slate-500 mx-1 uppercase">Cols:</span>
-                    <button onclick="setCols(1)" class="col-btn w-7 h-7 bg-white border-2 border-[#1c1b18] rounded-lg text-xs font-black hover:bg-[#ffc72c] transition">1</button>
-                    <button onclick="setCols(2)" class="col-btn w-7 h-7 bg-white border-2 border-[#1c1b18] rounded-lg text-xs font-black hover:bg-[#ffc72c] transition">2</button>
-                    <button onclick="setCols(3)" class="col-btn w-7 h-7 bg-white border-2 border-[#1c1b18] rounded-lg text-xs font-black hover:bg-[#ffc72c] transition">3</button>
-                    <button onclick="setCols(4)" class="col-btn w-7 h-7 bg-white border-2 border-[#1c1b18] rounded-lg text-xs font-black hover:bg-[#ffc72c] transition">4</button>
+                    <button onclick="setCols(1)"
+                        class="col-btn w-7 h-7 bg-white border-2 border-[#1c1b18] rounded-lg text-xs font-black hover:bg-[#ffc72c] transition">1</button>
+                    <button onclick="setCols(2)"
+                        class="col-btn w-7 h-7 bg-white border-2 border-[#1c1b18] rounded-lg text-xs font-black hover:bg-[#ffc72c] transition">2</button>
+                    <button onclick="setCols(3)"
+                        class="col-btn w-7 h-7 bg-white border-2 border-[#1c1b18] rounded-lg text-xs font-black hover:bg-[#ffc72c] transition">3</button>
+                    <button onclick="setCols(4)"
+                        class="col-btn w-7 h-7 bg-white border-2 border-[#1c1b18] rounded-lg text-xs font-black hover:bg-[#ffc72c] transition">4</button>
                 </div>
 
                 <!-- Tamanho do Texto -->
-                <div class="flex gap-1 items-center bg-white p-1 rounded-xl border-2 border-[#1c1b18] shadow-[2px_2px_0px_#1c1b18]">
-                    <button onclick="adjustFontSize(-1)" class="w-7 h-7 bg-white hover:bg-slate-100 rounded-lg text-xs font-black border-2 border-[#1c1b18]" title="Diminuir texto">A-</button>
-                    <button onclick="adjustFontSize(1)" class="w-7 h-7 bg-white hover:bg-slate-100 rounded-lg text-xs font-black border-2 border-[#1c1b18]" title="Aumentar texto">A+</button>
+                <div
+                    class="flex gap-1 items-center bg-white p-1 rounded-xl border-2 border-[#1c1b18] shadow-[2px_2px_0px_#1c1b18]">
+                    <button onclick="adjustFontSize(-1)"
+                        class="w-7 h-7 bg-white hover:bg-slate-100 rounded-lg text-xs font-black border-2 border-[#1c1b18]"
+                        title="Diminuir texto">A-</button>
+                    <button onclick="adjustFontSize(1)"
+                        class="w-7 h-7 bg-white hover:bg-slate-100 rounded-lg text-xs font-black border-2 border-[#1c1b18]"
+                        title="Aumentar texto">A+</button>
                 </div>
 
                 <!-- Metrônomo -->
-                <div class="flex gap-2 items-center bg-white px-3 py-1 rounded-xl border-2 border-[#1c1b18] shadow-[2px_2px_0px_#1c1b18]">
-                    <div id="metro-light" class="w-3.5 h-3.5 rounded-full bg-slate-200 border-2 border-[#1c1b18] transition"></div>
-                    <button id="btn-metro" onclick="toggleMetronome()" class="text-[#ff8b3d] hover:text-[#e65100] text-xs font-black uppercase tracking-wider">Metrônomo</button>
-                    <button id="btn-audio-mute" onclick="toggleAudioMute()" class="text-[#1c1b18] hover:text-[#ff8b3d] text-xs ml-1" title="Alternar Som do Metrônomo"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.5 10H2a1 1 0 00-1 1v2a1 1 0 001 1h3.5l4 4V6l-4 4z" /></svg></button>
+                <div
+                    class="flex gap-2 items-center bg-white px-3 py-1 rounded-xl border-2 border-[#1c1b18] shadow-[2px_2px_0px_#1c1b18]">
+                    <div id="metro-light"
+                        class="w-3.5 h-3.5 rounded-full bg-slate-200 border-2 border-[#1c1b18] transition"></div>
+                    <button id="btn-metro" onclick="toggleMetronome()"
+                        class="text-[#ff8b3d] hover:text-[#e65100] text-xs font-black uppercase tracking-wider">Metrônomo</button>
+                    <button id="btn-audio-mute" onclick="toggleAudioMute()"
+                        class="text-[#1c1b18] hover:text-[#ff8b3d] text-xs ml-1" title="Alternar Som do Metrônomo"><svg
+                            xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.5 10H2a1 1 0 00-1 1v2a1 1 0 001 1h3.5l4 4V6l-4 4z" />
+                        </svg></button>
                 </div>
 
-                <button onclick="editCurrentSheetSong()" class="neo-btn bg-[#ffc72c] px-3.5 py-1.5 text-xs uppercase flex items-center gap-1 shadow-md" title="Editar esta música">
-                    <span class="flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg> Editar</span>
+                <button onclick="editCurrentSheetSong()"
+                    class="neo-btn bg-[#ffc72c] px-3.5 py-1.5 text-xs uppercase flex items-center gap-1 shadow-md"
+                    title="Editar esta música">
+                    <span class="flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg"
+                            class="h-4 w-4 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg> Editar</span>
                 </button>
-                <button onclick="window.print()" class="neo-btn-green px-3.5 py-1.5 text-xs uppercase tracking-wider transition">Imprimir</button>
+                <button onclick="window.print()"
+                    class="neo-btn-green px-3.5 py-1.5 text-xs uppercase tracking-wider transition">Imprimir</button>
             </div>
         </div>
 
@@ -331,94 +475,122 @@
     </main>
 
     <!-- Modal de Seleção de Playlist -->
-    <div id="playlist-modal" class="fixed inset-0 bg-[#1c1b18]/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-        <div class="bg-white p-6 rounded-2xl w-full max-w-md border-3 border-[#1c1b18] shadow-[5px_5px_0px_#1c1b18] space-y-4">
+    <div id="playlist-modal"
+        class="fixed inset-0 bg-[#1c1b18]/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div
+            class="bg-white p-6 rounded-2xl w-full max-w-md border-3 border-[#1c1b18] shadow-[5px_5px_0px_#1c1b18] space-y-4">
             <h3 class="text-lg font-black mb-2 uppercase tracking-tight text-[#1c1b18]">Adicionar à Playlist</h3>
             <div id="modal-playlist-list" class="space-y-2 mb-4 max-h-60 overflow-y-auto"></div>
-            <button onclick="closePlaylistModal()" class="w-full neo-btn-danger py-2.5 text-xs transition">CANCELAR</button>
+            <button onclick="closePlaylistModal()"
+                class="w-full neo-btn-danger py-2.5 text-xs transition">CANCELAR</button>
         </div>
     </div>
 
     <!-- Modal de Importação de Cifra (HTML / Cifra Club) -->
-    <div id="cifra-import-modal" class="fixed inset-0 bg-[#1c1b18]/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-        <div class="bg-white p-6 rounded-2xl w-full max-w-2xl border-3 border-[#1c1b18] shadow-[5px_5px_0px_#1c1b18] space-y-4 max-h-[90vh] flex flex-col">
+    <div id="cifra-import-modal"
+        class="fixed inset-0 bg-[#1c1b18]/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div
+            class="bg-white p-6 rounded-2xl w-full max-w-2xl border-3 border-[#1c1b18] shadow-[5px_5px_0px_#1c1b18] space-y-4 max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center border-b-2 border-[#1c1b18] pb-3">
                 <div>
-                    <h3 class="text-lg font-black uppercase text-[#ff8b3d] tracking-wide">Importar Cifra de Guitarra</h3>
+                    <h3 class="text-lg font-black uppercase text-[#ff8b3d] tracking-wide">Importar Cifra de Guitarra
+                    </h3>
                     <p class="text-xs text-slate-500 font-bold">Conversão inteligente para Cifra de Baixo</p>
                 </div>
-                <button onclick="closeCifraImportModal()" class="text-slate-500 hover:text-black font-black text-lg px-2">✕</button>
+                <button onclick="closeCifraImportModal()"
+                    class="text-slate-500 hover:text-black font-black text-lg px-2">✕</button>
             </div>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-[#1c1b18]">
                 <div class="col-span-2">
                     <label class="text-[10px] font-black text-slate-500 uppercase">Música</label>
-                    <input type="text" id="import-preview-title" class="w-full bg-white border-2 border-[#1c1b18] p-2 rounded-xl text-sm font-bold text-[#1c1b18] outline-none focus:border-[#ffc72c] shadow-[2px_2px_0px_#1c1b18]">
+                    <input type="text" id="import-preview-title"
+                        class="w-full bg-white border-2 border-[#1c1b18] p-2 rounded-xl text-sm font-bold text-[#1c1b18] outline-none focus:border-[#ffc72c] shadow-[2px_2px_0px_#1c1b18]">
                 </div>
                 <div>
                     <label class="text-[10px] font-black text-slate-500 uppercase">Artista</label>
-                    <input type="text" id="import-preview-artist" class="w-full bg-white border-2 border-[#1c1b18] p-2 rounded-xl text-sm font-bold text-[#1c1b18] outline-none focus:border-[#ffc72c] shadow-[2px_2px_0px_#1c1b18]">
+                    <input type="text" id="import-preview-artist"
+                        class="w-full bg-white border-2 border-[#1c1b18] p-2 rounded-xl text-sm font-bold text-[#1c1b18] outline-none focus:border-[#ffc72c] shadow-[2px_2px_0px_#1c1b18]">
                 </div>
                 <div class="flex gap-2">
                     <div>
                         <label class="text-[10px] font-black text-slate-500 uppercase">Tom</label>
-                        <input type="text" id="import-preview-key" class="w-full bg-white border-2 border-[#1c1b18] p-2 rounded-xl text-sm font-bold text-[#ff8b3d] uppercase text-center outline-none focus:border-[#ffc72c] shadow-[2px_2px_0px_#1c1b18]">
+                        <input type="text" id="import-preview-key"
+                            class="w-full bg-white border-2 border-[#1c1b18] p-2 rounded-xl text-sm font-bold text-[#ff8b3d] uppercase text-center outline-none focus:border-[#ffc72c] shadow-[2px_2px_0px_#1c1b18]">
                     </div>
                     <div>
                         <label class="text-[10px] font-black text-slate-500 uppercase">BPM</label>
-                        <input type="number" id="import-preview-bpm" class="w-full bg-white border-2 border-[#1c1b18] p-2 rounded-xl text-sm font-bold text-amber-600 text-center outline-none focus:border-[#ffc72c] shadow-[2px_2px_0px_#1c1b18]">
+                        <input type="number" id="import-preview-bpm"
+                            class="w-full bg-white border-2 border-[#1c1b18] p-2 rounded-xl text-sm font-bold text-amber-600 text-center outline-none focus:border-[#ffc72c] shadow-[2px_2px_0px_#1c1b18]">
                     </div>
                 </div>
             </div>
 
             <!-- Opções de Conversão -->
-            <div class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border-2 border-[#1c1b18] shadow-[2px_2px_0px_#1c1b18]">
+            <div
+                class="flex items-center justify-between bg-slate-50 p-3 rounded-xl border-2 border-[#1c1b18] shadow-[2px_2px_0px_#1c1b18]">
                 <label class="flex items-center gap-2.5 cursor-pointer text-xs font-black text-[#1c1b18] select-none">
-                    <input type="checkbox" id="import-condense-chords" checked onchange="reprocessCifraPreview()" class="w-4 h-4 rounded border-2 border-[#1c1b18] text-[#ffc72c] focus:ring-0">
-                    <span>Condensar em compassos de Baixo (<code class="text-[#ff8b3d] bg-white border border-[#1c1b18] px-1.5 py-0.5 rounded text-[11px] font-bold">| E | B | C#m | A |</code>)</span>
+                    <input type="checkbox" id="import-condense-chords" checked onchange="reprocessCifraPreview()"
+                        class="w-4 h-4 rounded border-2 border-[#1c1b18] text-[#ffc72c] focus:ring-0">
+                    <span>Condensar em compassos de Baixo (<code
+                            class="text-[#ff8b3d] bg-white border border-[#1c1b18] px-1.5 py-0.5 rounded text-[11px] font-bold">| E | B | C#m | A |</code>)</span>
                 </label>
             </div>
 
             <!-- Pré-visualização das Seções -->
-            <div class="flex-1 overflow-y-auto bg-slate-50 p-4 rounded-xl border-2 border-[#1c1b18] shadow-[2px_2px_0px_#1c1b18] max-h-64">
+            <div
+                class="flex-1 overflow-y-auto bg-slate-50 p-4 rounded-xl border-2 border-[#1c1b18] shadow-[2px_2px_0px_#1c1b18] max-h-64">
                 <div id="import-preview-sections" class="space-y-3 font-mono text-xs text-[#1c1b18]"></div>
             </div>
 
             <div class="flex gap-3 pt-2">
-                <button onclick="openImportInEditor()" class="neo-btn-secondary py-2.5 text-xs flex-1">Abrir no Editor</button>
-                <button onclick="confirmCifraImport()" class="neo-btn py-2.5 text-xs flex-1">Salvar na Biblioteca</button>
+                <button onclick="openImportInEditor()" class="neo-btn-secondary py-2.5 text-xs flex-1">Abrir no
+                    Editor</button>
+                <button onclick="confirmCifraImport()" class="neo-btn py-2.5 text-xs flex-1">Salvar na
+                    Biblioteca</button>
             </div>
         </div>
     </div>
 
     <!-- Modal de Sincronização em Nuvem (Cloud Sync) -->
-    <div id="cloud-sync-modal" class="fixed inset-0 bg-[#1c1b18]/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-        <div class="bg-white p-6 rounded-2xl w-full max-w-md border-3 border-[#1c1b18] shadow-[5px_5px_0px_#1c1b18] space-y-4 text-[#1c1b18]">
+    <div id="cloud-sync-modal"
+        class="fixed inset-0 bg-[#1c1b18]/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div
+            class="bg-white p-6 rounded-2xl w-full max-w-md border-3 border-[#1c1b18] shadow-[5px_5px_0px_#1c1b18] space-y-4 text-[#1c1b18]">
             <div class="flex justify-between items-center border-b-2 border-[#1c1b18] pb-3">
                 <div>
-                    <h3 class="text-lg font-black uppercase text-emerald-600 tracking-wide flex items-center gap-2">☁️ Sincronização em Nuvem</h3>
+                    <h3 class="text-lg font-black uppercase text-emerald-600 tracking-wide flex items-center gap-2">☁️
+                        Sincronização em Nuvem</h3>
                     <p class="text-xs text-slate-500 font-bold">Sincronize entre PC, Celular e Banda em tempo real</p>
                 </div>
-                <button onclick="closeCloudSyncModal()" class="text-slate-500 hover:text-black font-black text-lg px-2">✕</button>
+                <button onclick="closeCloudSyncModal()"
+                    class="text-slate-500 hover:text-black font-black text-lg px-2">✕</button>
             </div>
 
             <div class="space-y-3">
-                <div id="cloud-status-badge" class="p-3 rounded-xl bg-slate-50 border-2 border-[#1c1b18] shadow-[2px_2px_0px_#1c1b18] text-xs font-bold flex items-center justify-between">
+                <div id="cloud-status-badge"
+                    class="p-3 rounded-xl bg-slate-50 border-2 border-[#1c1b18] shadow-[2px_2px_0px_#1c1b18] text-xs font-bold flex items-center justify-between">
                     <span class="text-slate-500">Status atual:</span>
                     <span id="cloud-status-text" class="text-[#ff5252] font-black">🔴 Desconectado</span>
                 </div>
 
                 <div>
-                    <label class="text-[10px] font-black text-slate-500 uppercase tracking-wider block mb-1">Código da sua Sala / Chave da Banda</label>
-                    <input type="text" id="cloud-room-input" placeholder="Ex: baixo-joao-2026" class="w-full bg-white border-2 border-[#1c1b18] p-3 rounded-xl text-sm font-bold text-[#1c1b18] outline-none focus:border-emerald-500 transition shadow-[2px_2px_0px_#1c1b18]">
-                    <p class="text-[11px] text-slate-500 font-medium mt-1.5">Digite o mesmo código no celular e no computador para conectar os dois aparelhos.</p>
+                    <label class="text-[10px] font-black text-slate-500 uppercase tracking-wider block mb-1">Código da
+                        sua Sala / Chave da Banda</label>
+                    <input type="text" id="cloud-room-input" placeholder="Ex: baixo-joao-2026"
+                        class="w-full bg-white border-2 border-[#1c1b18] p-3 rounded-xl text-sm font-bold text-[#1c1b18] outline-none focus:border-emerald-500 transition shadow-[2px_2px_0px_#1c1b18]">
+                    <p class="text-[11px] text-slate-500 font-medium mt-1.5">Digite o mesmo código no celular e no
+                        computador para conectar os dois aparelhos.</p>
                 </div>
             </div>
 
             <div class="space-y-2 pt-2">
-                <button onclick="connectCloudFromModal()" class="w-full neo-btn-green py-2.5 text-xs transition">Conectar & Sincronizar</button>
-                <button onclick="pushLocalToCloud()" class="w-full neo-btn-secondary py-2 text-xs transition">Enviar Músicas para a Nuvem</button>
-                <button onclick="disconnectCloud()" id="btn-cloud-disconnect" class="w-full neo-btn-danger py-2 text-xs hidden transition">Desconectar da Nuvem</button>
+                <button onclick="connectCloudFromModal()"
+                    class="w-full neo-btn-green py-2.5 text-xs transition">Conectar & Sincronizar</button>
+                <button onclick="pushLocalToCloud()" class="w-full neo-btn-secondary py-2 text-xs transition">Enviar
+                    Músicas para a Nuvem</button>
+                <button onclick="disconnectCloud()" id="btn-cloud-disconnect"
+                    class="w-full neo-btn-danger py-2 text-xs hidden transition">Desconectar da Nuvem</button>
             </div>
         </div>
     </div>
@@ -442,7 +614,7 @@
         let enharmonicPref = 'auto'; // 'auto', 'sharp', 'flat'
 
         const NOTES_SHARP = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-        const NOTES_FLAT  = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+        const NOTES_FLAT = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
 
         // --- Navegação de Telas ---
         function showView(view) {
@@ -460,7 +632,7 @@
 
             if (view === 'library') renderLibrary();
             if (view === 'playlists') renderPlaylists();
-            
+
             stopMetronome();
             if (view !== 'sheet') activePlaylist = null;
         }
@@ -539,10 +711,10 @@
             initAudio();
             isMetroOn = true;
             document.getElementById('btn-metro').innerText = 'PAUSAR';
-            
+
             beatNumber = 0;
             nextBeatTime = audioCtx.currentTime + 0.05;
-            
+
             metroInterval = setInterval(scheduler, scheduleInterval);
         }
 
@@ -599,10 +771,10 @@
         // --- Transposição de Acordes ---
         function transposeNote(noteStr, semitones) {
             const normMap = {
-                'Db':'C#', 'Eb':'D#', 'Gb':'F#', 'Ab':'G#', 'Bb':'A#',
-                'db':'C#', 'eb':'D#', 'gb':'F#', 'ab':'G#', 'bb':'A#',
-                'C':'C', 'C#':'C#', 'D':'D', 'D#':'D#', 'E':'E', 'F':'F',
-                'F#':'F#', 'G':'G', 'G#':'G#', 'A':'A', 'A#':'A#', 'B':'B'
+                'Db': 'C#', 'Eb': 'D#', 'Gb': 'F#', 'Ab': 'G#', 'Bb': 'A#',
+                'db': 'C#', 'eb': 'D#', 'gb': 'F#', 'ab': 'G#', 'bb': 'A#',
+                'C': 'C', 'C#': 'C#', 'D': 'D', 'D#': 'D#', 'E': 'E', 'F': 'F',
+                'F#': 'F#', 'G': 'G', 'G#': 'G#', 'A': 'A', 'A#': 'A#', 'B': 'B'
             };
             const norm = normMap[noteStr] || noteStr;
             let idx = NOTES_SHARP.indexOf(norm);
@@ -618,7 +790,7 @@
             } else if (enharmonicPref === 'sharp') {
                 return NOTES_SHARP[newIdx];
             } else {
-                const useFlat = ['Db','Eb','Gb','Ab','Bb','db','eb','gb','ab','bb'].includes(noteStr);
+                const useFlat = ['Db', 'Eb', 'Gb', 'Ab', 'Bb', 'db', 'eb', 'gb', 'ab', 'bb'].includes(noteStr);
                 return useFlat ? NOTES_FLAT[newIdx] : NOTES_SHARP[newIdx];
             }
         }
@@ -648,8 +820,8 @@
             const badge = document.getElementById('trans-badge');
             if (badge) {
                 badge.innerText = transposeSteps > 0 ? `+${transposeSteps}` : `${transposeSteps}`;
-                badge.className = transposeSteps !== 0 ? 
-                    'px-2 py-0.5 bg-[#ff8b3d] text-slate-900 rounded-md text-[10px] font-black border border-slate-900' : 
+                badge.className = transposeSteps !== 0 ?
+                    'px-2 py-0.5 bg-[#ff8b3d] text-slate-900 rounded-md text-[10px] font-black border border-slate-900' :
                     'px-2 py-0.5 bg-[#ffc72c] text-slate-900 rounded-md text-[10px] font-black border border-slate-900';
             }
             if (currentSongId) {
@@ -817,7 +989,7 @@
             document.getElementById('bpm_input').value = s.bpm || '';
             document.getElementById('key').value = s.key;
             document.getElementById('notes').value = s.notes || '';
-            
+
             const container = document.getElementById('sections-container');
             container.innerHTML = '';
             const secs = (s.sections && s.sections.length) ? s.sections : [{ name: 'INTRO', content: '', type: 'CHORDS', layout: 'text' }];
@@ -833,7 +1005,7 @@
             if (confirm(`Deseja excluir a música "${song ? song.title : ''}"?`)) {
                 let lib = getLibrary().filter(s => s.id !== id);
                 saveLibrary(lib);
-                
+
                 // Remove das playlists
                 let pls = getPlaylists();
                 pls.forEach(p => { p.songIds = p.songIds.filter(sid => sid !== id); });
@@ -845,7 +1017,7 @@
         }
 
         // --- Renderização da Biblioteca ---
-                function renderLibrary() {
+        function renderLibrary() {
             const list = document.getElementById('library-list');
             if (!list) return;
 
@@ -861,8 +1033,8 @@
             if (keySelect) {
                 const currentSelectedKey = keySelect.value || '';
                 const existingKeys = [...new Set(lib.map(s => (s.key || '').trim().toUpperCase()).filter(k => k && k !== '-'))].sort();
-                
-                keySelect.innerHTML = '<option value="">TODOS OS TONS</option>' + 
+
+                keySelect.innerHTML = '<option value="">TODOS OS TONS</option>' +
                     existingKeys.map(k => `<option value="${k}">${k}</option>`).join('');
                 if (existingKeys.includes(currentSelectedKey)) {
                     keySelect.value = currentSelectedKey;
@@ -874,9 +1046,9 @@
             const activeKeyFilter = keySelect ? keySelect.value : '';
 
             lib = lib.filter(s => {
-                const matchesSearch = !search || (s.title || '').toLowerCase().includes(search) || 
-                                      (s.artist || '').toLowerCase().includes(search) ||
-                                      (s.notes || '').toLowerCase().includes(search);
+                const matchesSearch = !search || (s.title || '').toLowerCase().includes(search) ||
+                    (s.artist || '').toLowerCase().includes(search) ||
+                    (s.notes || '').toLowerCase().includes(search);
                 const matchesKey = !activeKeyFilter || (s.key || '').toUpperCase() === activeKeyFilter.toUpperCase();
                 return matchesSearch && matchesKey;
             });
@@ -923,7 +1095,7 @@
             const lib = getLibrary();
             const s = lib.find(x => x.id === id);
             if (!s) return;
-            
+
             currentBpm = parseInt(s.bpm) || 0;
 
             if (playlistId) {
@@ -950,12 +1122,12 @@
             if (!s) return;
 
             const baseFontSizeClass = fontSizeDelta === -2 ? 'text-xs' :
-                                      fontSizeDelta === -1 ? 'text-sm' :
-                                      fontSizeDelta === 1  ? 'text-xl' :
-                                      fontSizeDelta === 2  ? 'text-2xl' :
-                                      fontSizeDelta === 3  ? 'text-3xl' : 'text-lg';
+                fontSizeDelta === -1 ? 'text-sm' :
+                    fontSizeDelta === 1 ? 'text-xl' :
+                        fontSizeDelta === 2 ? 'text-2xl' :
+                            fontSizeDelta === 3 ? 'text-3xl' : 'text-lg';
 
-            const displayKey = (transposeSteps !== 0 || enharmonicPref !== 'auto') ? 
+            const displayKey = (transposeSteps !== 0 || enharmonicPref !== 'auto') ?
                 `${transposeNote(s.key, transposeSteps)} (${s.key})` : (s.key || '-');
 
             const sectionsHtml = (s.sections || []).map(sec => {
@@ -1071,10 +1243,10 @@
                     </div>
                     <div class="space-y-2">
                         ${pl.songIds.map((sid, idx) => {
-                            const song = lib.find(s => s.id === sid);
-                            const isFirst = idx === 0;
-                            const isLast = idx === pl.songIds.length - 1;
-                            return song ? `
+                const song = lib.find(s => s.id === sid);
+                const isFirst = idx === 0;
+                const isLast = idx === pl.songIds.length - 1;
+                return song ? `
                                 <div class="bg-white p-3 rounded-xl text-sm flex justify-between items-center border-2 border-[#1c1b18] hover:bg-[#ffc72c]/10 transition cursor-grab active:cursor-grabbing"
                                      draggable="true"
                                      ondragstart="handlePlaylistDragStart(event, ${pl.id}, ${idx})"
@@ -1093,7 +1265,7 @@
                                     </div>
                                 </div>
                             ` : '';
-                        }).join('')}
+            }).join('')}
                     </div>
                 </div>
             `).join('') : `
@@ -1132,7 +1304,7 @@
                     <span class="text-[10px] bg-white border border-[#1c1b18] px-2 py-0.5 rounded text-slate-500 font-bold">${pl.songIds.length} músicas</span>
                 </button>
             `).join('') : '<p class="text-slate-500 text-xs text-center py-4 font-bold">Crie uma playlist primeiro na aba Playlists.</p>';
-            
+
             const modal = document.getElementById('playlist-modal');
             modal.classList.remove('hidden');
             modal.classList.add('flex');
@@ -1181,7 +1353,7 @@
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = `bassblocks_backup_${new Date().toISOString().slice(0,10)}.json`;
+            a.download = `bassblocks_backup_${new Date().toISOString().slice(0, 10)}.json`;
             a.click();
             showToast('Backup exportado com sucesso!', 'success');
         }
@@ -1423,7 +1595,7 @@
             saveLibrary(lib);
 
             closeCifraImportModal();
-                closeCloudSyncModal();
+            closeCloudSyncModal();
             showToast(`"${title}" importada para a biblioteca!`, 'success');
             openSheet(song.id);
         }
@@ -1436,7 +1608,7 @@
             const bpm = parseInt(document.getElementById('import-preview-bpm').value) || 0;
 
             closeCifraImportModal();
-                closeCloudSyncModal();
+            closeCloudSyncModal();
 
             document.getElementById('create-view-title').innerText = "Importar & Editar Música";
             document.getElementById('edit-id').value = '';
@@ -1455,7 +1627,7 @@
             showView('create');
         }
 
-                // --- Utilitários de Persistência Segura (Local & Memória Fallback) ---
+        // --- Utilitários de Persistência Segura (Local & Memória Fallback) ---
         const memoryStorage = {};
         function safeGetStorage(key, fallback = null) {
             try {
@@ -1483,772 +1655,772 @@
         }
 
         const INITIAL_LIBRARY = [
-  {
-    "id": 1772490269688,
-    "title": "Isaías 9",
-    "artist": "Rodolfo",
-    "key": "D",
-    "bpm": "151",
-    "sections": [
-      {
-        "name": "INTRO & vERSO i",
-        "content": "|D|A|B",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "PRÉ-REFRÃO",
-        "content": "|G|B|E|\n|G|B|A|",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "REFRÃO & VERSO ii",
-        "content": "|B|F#|B|G|D|F#|G|",
-        "type": "CHORDS",
-        "layout": "text"
-      }
-    ]
-  },
-  {
-    "id": 1772491548193,
-    "title": "Estamos de Pé",
-    "artist": "Marcus Salles",
-    "key": "A",
-    "bpm": "110",
-    "sections": [
-      {
-        "name": "INTRO & FINALE",
-        "content": "|A|E|G|D|",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "VERSO",
-        "content": "|A|F#|D|A|",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "REFRÃO",
-        "content": "|A|E|B|C#|D|A|E|G|D|A|",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "PONTE",
-        "content": "|E|G|D|A|",
-        "type": "CHORDS",
-        "layout": "text"
-      }
-    ]
-  },
-  {
-    "id": 1772900992946,
-    "title": "A boa parte",
-    "artist": "fhop",
-    "key": "E",
-    "bpm": "144",
-    "sections": [
-      {
-        "name": "INTRO",
-        "content": "|E|",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "PRÉ-REFRÃO",
-        "content": "|B-E| |B-E|\n|B-E| |B-F#-G#-E|",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "SOLO",
-        "content": "|E-F#-G#-C#-B-E|\n\nG|----------------------------------------|\nD|----------------------------------------|\nA|-------4-2------------------------------|\nE|-0-2-4-----0----------------------------|",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "VERSO",
-        "content": "|E|A|\n|C#|A|E|",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "REFRÃO",
-        "content": "|E|F#|G#|A|B|\n|C#|F#|E|A|B|",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "PONTE",
-        "content": "|B|G#|A|F#|\n|B|G#|A|G#|",
-        "type": "CHORDS",
-        "layout": "text"
-      }
-    ]
-  },
-  {
-    "id": 1772901680703,
-    "title": "Meia Noite",
-    "artist": "fhop",
-    "key": "Bm",
-    "bpm": "98",
-    "notes": "A sequência E - F# - G - A é uma subida escalar. Aproveite para fazer essa linha com bastante sustentação, preparando para a explosão do Refrão Final.  Tente fazer o Fá# na 4ª corda (casa 2) ou na 3ª corda (casa 9) dependendo da região onde estiver tocando o Bm.",
-    "sections": [
-      {
-        "name": "VERSO",
-        "content": "|B|G|E|",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "PRÉ-REFRÃO",
-        "content": "|G|A| (x3)\n|E|",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "VERSO",
-        "content": "|G|D|E|G|A|",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "PONTE",
-        "content": "|E|F#|E|B|A| (x2)\n|E|F#|G|A| (x2)\n|G|A|B|F#|G|A|E|",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      }
-    ]
-  },
-  {
-    "id": 1775601624549,
-    "title": "Moises",
-    "artist": "Fernandinho",
-    "key": "Dm",
-    "bpm": "138",
-    "notes": "",
-    "sections": [
-      {
-        "name": "intro",
-        "content": "D D F D D ",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "VERSO",
-        "content": "D\nG F",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Pré-Refrão",
-        "content": "G C# C G# G E F F#\nG C# C G# G F E D# D",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "REFRÃO",
-        "content": "D   A#   F   C \nD   A#   F",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "INTERLÚDIO",
-        "content": "D G F D",
-        "type": "CHORDS",
-        "layout": "text"
-      }
-    ]
-  },
-  {
-    "id": 1775772532134,
-    "title": "Gratidão",
-    "artist": "FHOP",
-    "key": "Bb",
-    "bpm": "78",
-    "notes": "A sequência Bb -> Gm -> F -> Eb forma um desenho de \"caixa\" muito comum no baixo entre a corda E e A. É excelente para manter a mão relaxada durante a execução longa.",
-    "sections": [
-      {
-        "name": "Intro",
-        "content": "Bb | Gm | F | Eb",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Primeira Parte",
-        "content": "Bb | Gm | F | Eb\nBb | Gm | F | Eb",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Refrão",
-        "content": "Bb | Bb | F | F\nD | Eb | Gm - F\nBb | Bb | F | F\nD | Eb | Gm - F | Bb",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Segunda Parte",
-        "content": "Bb | Gm | F | Eb\nBb | Gm | F | Eb",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Refrão",
-        "content": "Bb | Bb | F | F\nD | Eb | Gm - F\nBb | Bb | F | F\nD | Eb | Gm - F",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Ponte",
-        "content": "Bb | Bb | Bb | Bb\nBb | F | D - Eb | Bb - F\nBb | F | D - Eb | Gm - F",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Instrumental",
-        "content": "Eb - Gm | F | Eb - Gm | F | Eb - Gm | F - Eb",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Refrão (alt)",
-        "content": "Bb | Bb | F | F\nEb | Eb | Eb | Eb (Aqui o baixo sustenta o Eb)\nBb | Bb | F | F\nD | Eb | Eb | Eb",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Interlúdio",
-        "content": "Bb | F | Eb | Eb (Repetir conforme a intensidade)",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Ponte",
-        "content": "Bb | F | Eb | Eb\nBb | F | Eb | Eb",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Refrão Final",
-        "content": "Bb | Bb | F | F\nEb | Eb | Eb | Eb\nBb | Bb | F | F\nD | Eb | Eb | Bb",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      }
-    ]
-  },
-  {
-    "id": 1775781915024,
-    "title": "Jesus Em Tua Presença",
-    "artist": "MORADA",
-    "key": "E",
-    "bpm": "71",
-    "notes": "",
-    "sections": [
-      {
-        "name": "SOLO1",
-        "content": "A B C# G#\nA B F#\nA B C# G# F#",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "PRIMEIRA PARTE",
-        "content": "C# A B E",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "PRÉ-REFRÃO",
-        "content": "G# A B C#\nC# G# A B F#",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "REFRÃO",
-        "content": "A B C#\nA B C#\nA B C# B A\nA B C# G#",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "sOLO2",
-        "content": "A B A B C# G# \nA B A G# F#\nA B C# G# B(h)A(h)B F#",
-        "type": "CHORDS",
-        "layout": "text"
-      }
-    ]
-  },
-  {
-    "id": 1775916721632,
-    "title": "Grande é o Senhor",
-    "artist": "Adhemar de Campos",
-    "key": "A",
-    "bpm": "72",
-    "sections": [
-      {
-        "name": "Primeira Parte",
-        "content": "A | D | A | D\nG# | C#m | E\nBm - C#m - D - E (Passagem ascendente)",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Refrão",
-        "content": "A | C#m | D - C#m | Bm | E\nA | C#m | D - C#m | Bm | E\nD - E - A (Finalização)",
-        "type": "CHORDS",
-        "layout": "text"
-      }
-    ]
-  },
-  {
-    "id": 1775917001246,
-    "title": "Vim Para Adorar-te",
-    "artist": "Adoração & Adoradores",
-    "key": "E",
-    "bpm": "72",
-    "notes": "",
-    "sections": [
-      {
-        "name": "Intro",
-        "content": "E | B | E | A",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Primeira Parte",
-        "content": "E | B | E | A\nE | B | A",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Refrão",
-        "content": "E | B | E | A",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Ponte",
-        "content": "B | E | A | A",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      }
-    ]
-  },
-  {
-    "id": 1775917311576,
-    "title": "Cristo Venceu",
-    "artist": "Ipalpha",
-    "key": "A",
-    "bpm": "74",
-    "notes": "",
-    "sections": [
-      {
-        "name": "Intro",
-        "content": "A | D | A\nF#m | D | A",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Primeira Parte",
-        "content": "A | D | A\nF#m - E | D - C#\nD - E | A\n",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Refrão",
-        "content": "D | A | E | F#m\nE | D | A | F#m - E\nD | A | E | F#m\nD - E | A | D | A | F#m | D | A",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Ponte",
-        "content": "D | A | \nF#m | D - A",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Final",
-        "content": "A | D | A |\nF#m | D | A",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      }
-    ]
-  },
-  {
-    "id": 1775918240881,
-    "title": "É Ele",
-    "artist": "Drops",
-    "key": "Bb",
-    "bpm": "70",
-    "notes": "No tom de Bb, você terá o Eb (casa 6 da corda A ou casa 1 da corda D) e o F (casa 1 da corda E ou casa 8 da corda A). Escolha a região que mais te agrada para o timbre; as notas mais graves (casas baixas) tendem a soar mais encorpadas para esse estilo.",
-    "sections": [
-      {
-        "name": "Intro",
-        "content": "Eb | F | Gm\nDm | Eb | F",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Primeira Parte",
-        "content": "Bb | Gm | Eb\nBb | Gm | Eb | Bb",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Segunda Parte",
-        "content": "Eb | Gm | Bb | F\nEb | Gm | Bb | F",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Refrão",
-        "content": "Eb | F | Gm \nDm | Eb | F",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Primeira Parte (Alt)",
-        "content": "Bb | Bb | Gm | F | Eb\nBb | Bb | Gm | F | Eb",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "segunda Parte",
-        "content": "Eb | Gm | Bb | F\nEb | Gm | Bb | F",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "refrão",
-        "content": "Eb | F | Gm \nDm | Eb | F",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "ponte",
-        "content": "Bb | Bb | Gm | Gm | Eb | F\nBb | Bb | Gm | Gm | Eb | F | Bb",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Refrão (alt)",
-        "content": "Eb | F | Gm | Dm | Eb | F\nEb | F | Gm | Bb\nEb | Gm  | F",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "ponte",
-        "content": "Cm | (h)Gm - F | Gm | Bb\nCm | (h)Gm - F | Gm ",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "outro",
-        "content": "Eb | Bb | Bb | Cm | Eb ",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "finale",
-        "content": "Gm (h) F | Gm (h) F | Bb | Bb\nCm | Eb |",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Refrão final",
-        "content": "Eb | F | Gm | Dm | Eb | Gm(h)F\nEb | F | Gm | Bb | Eb | F",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      }
-    ]
-  },
-  {
-    "id": 1776126904875,
-    "title": "Desenvolvendo Amor",
-    "artist": "MORADA",
-    "key": "G",
-    "bpm": "75",
-    "notes": "A música é básicamente Em -> Bm -> Am -> Bm, variando apenas a levada",
-    "sections": [
-      {
-        "name": "Intro",
-        "content": "D - D# - Em (Subida cromática para o Em)",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Instrumental",
-        "content": "       Em             | Bm   |     Am                  | Bm \nG|-------------------------------------------------------------------|\nD|-------------------------------------------------------------------|\nA|--7--7---7---------------5-5-7-7----------------------------5-5-7-7|\nE|-------9---9--7-5-7--7-7---------5-3-5--5-3-5--5-3-7---7-7---------|",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Primeira Parte",
-        "content": "Em | G | Bm | Bm | Bm | Bm | Bm |G | Am \nBm | Bm | Bm | Bm | Bm | D | G | Am (na 2ª vez tocar: D | D# | E)",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Refrão",
-        "content": "       Em             | Bm   |     Am                  | Bm \nG|-------------------------------------------------------------------|\nD|-------------------------------------------------------------------|\nA|--7--7---7---------------5-5-7-7----------------------------5-5-7-7|\nE|-------9---9--7-5-7--7-7---------5-3-5--5-3-5--5-3-7---7-7---------|",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "solo",
-        "content": "G|--------12--14/16(h)14---12-11-------------------------------------|\nD|--12-14---------------------------12----  12-14--12----------------|\nA|--------------------------------------14-------------14--10--12(b)-|\nE|-------------------------------------------------------------------|",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Verso",
-        "content": "Em | G | Bm | Bm | Bm | Bm | Bm |G | Am \nE | E7(s)E9\nBm | Bm | Bm | Bm | Bm | D | G | Am (na 2ª vez tocar: D | D# | E)",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Refrão (igual)",
-        "content": "       Em             | Bm   |     Am                  | Bm \nG|-------------------------------------------------------------------|\nD|-------------------------------------------------------------------|\nA|--7--7---7---------------5-5-7-7----------------------------5-5-7-7|\nE|-------9---9--7-5-7--7-7---------5-3-5--5-3-5--5-3-7---7-7---------|",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Ponte",
-        "content": "G|-----------12-12--9-9-------------------------------|\nD|--7~--9~----------------10-10-----------7~---9------|\nA|-------------------------------12-12----------------|\nE|----------------------------------------------------|",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "RAP",
-        "content": "C | C | Em | Em | Gm | Gm | Bm | Gm\nE | Gm | Am",
-        "type": "CHORDS",
-        "layout": "text"
-      }
-    ]
-  },
-  {
-    "id": 1776128318899,
-    "title": "Dançar na Chuva",
-    "artist": "Fernandinho",
-    "key": "D",
-    "bpm": "128",
-    "notes": "No início, o baixo costuma sustentar o pedal em D enquanto os acordes mudam em cima",
-    "sections": [
-      {
-        "name": "Primeira Parte",
-        "content": "D | D | D | D\nD | D | G | G\nD | D | D | D\nD | D | G | F",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Refrão",
-        "content": "D | F# | B | F#\nG | F# | E | A\nD | F# | B | F#\nG | F# | E | A\nB (Sustenta para a virada)\nNa repetição:\nB (Convenção: B - B - C# - D)",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Ponte - Dance",
-        "content": "B | B | B | B\nE | F# | G | A\nE | F# | G | A",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Passagem",
-        "content": "(Notas isoladas): B\n(Descida cromática): \n D - F# - B - Bb \n D - F# - Bb - A \n D - F# - A - Ab - G - Gb - D",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "É proibido",
-        "content": "B | B | B | B\n(Riff): D - E - F# - A - Ab - E - F# (4x)",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Refrão Final",
-        "content": "D | F# | B | F#\nG | F# | E | A\nD | Bb (Inversão) | B | G# (Inversão)\nG | F# | E | A\nB (Finaliza)",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      }
-    ]
-  },
-  {
-    "id": 1776165607168,
-    "title": "Que Ruja o Leão",
-    "artist": "Isaias Saad",
-    "key": "F#m",
-    "bpm": "70",
-    "notes": "No refrão, para dar o efeito de que a \"terra estremece\", experimente tocar a tônica e a oitava (Ex: F# na corda E, casa 2 + F# na corda D, casa 4). Isso preenche muito o som no Power Trio ou em bandas maiores.",
-    "sections": [
-      {
-        "name": "Intro",
-        "content": "F# | E | D | B",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Primeira Parte",
-        "content": "F# | F# | F# | F# (O baixo mantém o pedal em F# mesmo nas mudanças de acorde)\nF# | F# | F# | F#",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Refrão",
-        "content": "E | F# | E | E\nD | B | F# | F# (Repete conforme a intensidade)",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Solo 1",
-        "content": "E | D | B | B\nF# | E | D | B",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Ponte",
-        "content": "F# | E | D | B\nF# | E | F# | E\nF# | E | D | B\nF# | E | F# | F#",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Solo 2",
-        "content": "E | D | B | B\nF# | E | D | B",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Passagem",
-        "content": "F# | F# | F# | F# (Sustente a nota pedal e vá crescendo a dinâmica)",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Refrão Final",
-        "content": "F# | F# | E | E\nD | B | F# | F#\nE | F# | E | E\nD | B | F# | F#",
-        "isTab": false,
-        "type": "CHORDS",
-        "layout": "text"
-      }
-    ]
-  },
-  {
-    "id": 1777934390052,
-    "title": "Até Outra Vez (bênção)",
-    "artist": "Projeto SOLA",
-    "key": "D",
-    "bpm": "132",
-    "notes": "",
-    "sections": [
-      {
-        "name": "VERSO",
-        "content": "D | D(h)E | \nD | D(h)E |\nG | A | Em",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Refrão",
-        "content": "D | G | Bm |\nG | F# | Em | D-A-D",
-        "type": "CHORDS",
-        "layout": "text"
-      }
-    ]
-  },
-  {
-    "id": 1778080755818,
-    "title": "Teu Reino",
-    "artist": "Cristo Vivo",
-    "key": "E",
-    "bpm": "140",
-    "notes": "Durante o solo, o foco sai do Mi (E) e vai para o C# (Dó sustenido). Sinta o peso dessa nota (Corda A, casa 4) para dar sustentação ao guitarrista.",
-    "sections": [
-      {
-        "name": "Primeira Parte",
-        "content": "E (x4)\nA | F# | E |",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Refrão",
-        "content": "A | F# | E | E8\nA | F# | E |",
-        "type": "CHORDS",
-        "layout": "text"
-      },
-      {
-        "name": "Solo",
-        "content": "C# | F# | E",
-        "type": "CHORDS",
-        "layout": "text"
-      }
-    ]
-  }
-];
+            {
+                "id": 1772490269688,
+                "title": "Isaías 9",
+                "artist": "Rodolfo",
+                "key": "D",
+                "bpm": "151",
+                "sections": [
+                    {
+                        "name": "INTRO & vERSO i",
+                        "content": "|D|A|B",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "PRÉ-REFRÃO",
+                        "content": "|G|B|E|\n|G|B|A|",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "REFRÃO & VERSO ii",
+                        "content": "|B|F#|B|G|D|F#|G|",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    }
+                ]
+            },
+            {
+                "id": 1772491548193,
+                "title": "Estamos de Pé",
+                "artist": "Marcus Salles",
+                "key": "A",
+                "bpm": "110",
+                "sections": [
+                    {
+                        "name": "INTRO & FINALE",
+                        "content": "|A|E|G|D|",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "VERSO",
+                        "content": "|A|F#|D|A|",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "REFRÃO",
+                        "content": "|A|E|B|C#|D|A|E|G|D|A|",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "PONTE",
+                        "content": "|E|G|D|A|",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    }
+                ]
+            },
+            {
+                "id": 1772900992946,
+                "title": "A boa parte",
+                "artist": "fhop",
+                "key": "E",
+                "bpm": "144",
+                "sections": [
+                    {
+                        "name": "INTRO",
+                        "content": "|E|",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "PRÉ-REFRÃO",
+                        "content": "|B-E| |B-E|\n|B-E| |B-F#-G#-E|",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "SOLO",
+                        "content": "|E-F#-G#-C#-B-E|\n\nG|----------------------------------------|\nD|----------------------------------------|\nA|-------4-2------------------------------|\nE|-0-2-4-----0----------------------------|",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "VERSO",
+                        "content": "|E|A|\n|C#|A|E|",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "REFRÃO",
+                        "content": "|E|F#|G#|A|B|\n|C#|F#|E|A|B|",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "PONTE",
+                        "content": "|B|G#|A|F#|\n|B|G#|A|G#|",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    }
+                ]
+            },
+            {
+                "id": 1772901680703,
+                "title": "Meia Noite",
+                "artist": "fhop",
+                "key": "Bm",
+                "bpm": "98",
+                "notes": "A sequência E - F# - G - A é uma subida escalar. Aproveite para fazer essa linha com bastante sustentação, preparando para a explosão do Refrão Final.  Tente fazer o Fá# na 4ª corda (casa 2) ou na 3ª corda (casa 9) dependendo da região onde estiver tocando o Bm.",
+                "sections": [
+                    {
+                        "name": "VERSO",
+                        "content": "|B|G|E|",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "PRÉ-REFRÃO",
+                        "content": "|G|A| (x3)\n|E|",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "VERSO",
+                        "content": "|G|D|E|G|A|",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "PONTE",
+                        "content": "|E|F#|E|B|A| (x2)\n|E|F#|G|A| (x2)\n|G|A|B|F#|G|A|E|",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    }
+                ]
+            },
+            {
+                "id": 1775601624549,
+                "title": "Moises",
+                "artist": "Fernandinho",
+                "key": "Dm",
+                "bpm": "138",
+                "notes": "",
+                "sections": [
+                    {
+                        "name": "intro",
+                        "content": "D D F D D ",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "VERSO",
+                        "content": "D\nG F",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Pré-Refrão",
+                        "content": "G C# C G# G E F F#\nG C# C G# G F E D# D",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "REFRÃO",
+                        "content": "D   A#   F   C \nD   A#   F",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "INTERLÚDIO",
+                        "content": "D G F D",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    }
+                ]
+            },
+            {
+                "id": 1775772532134,
+                "title": "Gratidão",
+                "artist": "FHOP",
+                "key": "Bb",
+                "bpm": "78",
+                "notes": "A sequência Bb -> Gm -> F -> Eb forma um desenho de \"caixa\" muito comum no baixo entre a corda E e A. É excelente para manter a mão relaxada durante a execução longa.",
+                "sections": [
+                    {
+                        "name": "Intro",
+                        "content": "Bb | Gm | F | Eb",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Primeira Parte",
+                        "content": "Bb | Gm | F | Eb\nBb | Gm | F | Eb",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Refrão",
+                        "content": "Bb | Bb | F | F\nD | Eb | Gm - F\nBb | Bb | F | F\nD | Eb | Gm - F | Bb",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Segunda Parte",
+                        "content": "Bb | Gm | F | Eb\nBb | Gm | F | Eb",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Refrão",
+                        "content": "Bb | Bb | F | F\nD | Eb | Gm - F\nBb | Bb | F | F\nD | Eb | Gm - F",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Ponte",
+                        "content": "Bb | Bb | Bb | Bb\nBb | F | D - Eb | Bb - F\nBb | F | D - Eb | Gm - F",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Instrumental",
+                        "content": "Eb - Gm | F | Eb - Gm | F | Eb - Gm | F - Eb",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Refrão (alt)",
+                        "content": "Bb | Bb | F | F\nEb | Eb | Eb | Eb (Aqui o baixo sustenta o Eb)\nBb | Bb | F | F\nD | Eb | Eb | Eb",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Interlúdio",
+                        "content": "Bb | F | Eb | Eb (Repetir conforme a intensidade)",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Ponte",
+                        "content": "Bb | F | Eb | Eb\nBb | F | Eb | Eb",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Refrão Final",
+                        "content": "Bb | Bb | F | F\nEb | Eb | Eb | Eb\nBb | Bb | F | F\nD | Eb | Eb | Bb",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    }
+                ]
+            },
+            {
+                "id": 1775781915024,
+                "title": "Jesus Em Tua Presença",
+                "artist": "MORADA",
+                "key": "E",
+                "bpm": "71",
+                "notes": "",
+                "sections": [
+                    {
+                        "name": "SOLO1",
+                        "content": "A B C# G#\nA B F#\nA B C# G# F#",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "PRIMEIRA PARTE",
+                        "content": "C# A B E",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "PRÉ-REFRÃO",
+                        "content": "G# A B C#\nC# G# A B F#",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "REFRÃO",
+                        "content": "A B C#\nA B C#\nA B C# B A\nA B C# G#",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "sOLO2",
+                        "content": "A B A B C# G# \nA B A G# F#\nA B C# G# B(h)A(h)B F#",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    }
+                ]
+            },
+            {
+                "id": 1775916721632,
+                "title": "Grande é o Senhor",
+                "artist": "Adhemar de Campos",
+                "key": "A",
+                "bpm": "72",
+                "sections": [
+                    {
+                        "name": "Primeira Parte",
+                        "content": "A | D | A | D\nG# | C#m | E\nBm - C#m - D - E (Passagem ascendente)",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Refrão",
+                        "content": "A | C#m | D - C#m | Bm | E\nA | C#m | D - C#m | Bm | E\nD - E - A (Finalização)",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    }
+                ]
+            },
+            {
+                "id": 1775917001246,
+                "title": "Vim Para Adorar-te",
+                "artist": "Adoração & Adoradores",
+                "key": "E",
+                "bpm": "72",
+                "notes": "",
+                "sections": [
+                    {
+                        "name": "Intro",
+                        "content": "E | B | E | A",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Primeira Parte",
+                        "content": "E | B | E | A\nE | B | A",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Refrão",
+                        "content": "E | B | E | A",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Ponte",
+                        "content": "B | E | A | A",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    }
+                ]
+            },
+            {
+                "id": 1775917311576,
+                "title": "Cristo Venceu",
+                "artist": "Ipalpha",
+                "key": "A",
+                "bpm": "74",
+                "notes": "",
+                "sections": [
+                    {
+                        "name": "Intro",
+                        "content": "A | D | A\nF#m | D | A",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Primeira Parte",
+                        "content": "A | D | A\nF#m - E | D - C#\nD - E | A\n",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Refrão",
+                        "content": "D | A | E | F#m\nE | D | A | F#m - E\nD | A | E | F#m\nD - E | A | D | A | F#m | D | A",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Ponte",
+                        "content": "D | A | \nF#m | D - A",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Final",
+                        "content": "A | D | A |\nF#m | D | A",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    }
+                ]
+            },
+            {
+                "id": 1775918240881,
+                "title": "É Ele",
+                "artist": "Drops",
+                "key": "Bb",
+                "bpm": "70",
+                "notes": "No tom de Bb, você terá o Eb (casa 6 da corda A ou casa 1 da corda D) e o F (casa 1 da corda E ou casa 8 da corda A). Escolha a região que mais te agrada para o timbre; as notas mais graves (casas baixas) tendem a soar mais encorpadas para esse estilo.",
+                "sections": [
+                    {
+                        "name": "Intro",
+                        "content": "Eb | F | Gm\nDm | Eb | F",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Primeira Parte",
+                        "content": "Bb | Gm | Eb\nBb | Gm | Eb | Bb",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Segunda Parte",
+                        "content": "Eb | Gm | Bb | F\nEb | Gm | Bb | F",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Refrão",
+                        "content": "Eb | F | Gm \nDm | Eb | F",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Primeira Parte (Alt)",
+                        "content": "Bb | Bb | Gm | F | Eb\nBb | Bb | Gm | F | Eb",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "segunda Parte",
+                        "content": "Eb | Gm | Bb | F\nEb | Gm | Bb | F",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "refrão",
+                        "content": "Eb | F | Gm \nDm | Eb | F",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "ponte",
+                        "content": "Bb | Bb | Gm | Gm | Eb | F\nBb | Bb | Gm | Gm | Eb | F | Bb",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Refrão (alt)",
+                        "content": "Eb | F | Gm | Dm | Eb | F\nEb | F | Gm | Bb\nEb | Gm  | F",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "ponte",
+                        "content": "Cm | (h)Gm - F | Gm | Bb\nCm | (h)Gm - F | Gm ",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "outro",
+                        "content": "Eb | Bb | Bb | Cm | Eb ",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "finale",
+                        "content": "Gm (h) F | Gm (h) F | Bb | Bb\nCm | Eb |",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Refrão final",
+                        "content": "Eb | F | Gm | Dm | Eb | Gm(h)F\nEb | F | Gm | Bb | Eb | F",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    }
+                ]
+            },
+            {
+                "id": 1776126904875,
+                "title": "Desenvolvendo Amor",
+                "artist": "MORADA",
+                "key": "G",
+                "bpm": "75",
+                "notes": "A música é básicamente Em -> Bm -> Am -> Bm, variando apenas a levada",
+                "sections": [
+                    {
+                        "name": "Intro",
+                        "content": "D - D# - Em (Subida cromática para o Em)",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Instrumental",
+                        "content": "       Em             | Bm   |     Am                  | Bm \nG|-------------------------------------------------------------------|\nD|-------------------------------------------------------------------|\nA|--7--7---7---------------5-5-7-7----------------------------5-5-7-7|\nE|-------9---9--7-5-7--7-7---------5-3-5--5-3-5--5-3-7---7-7---------|",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Primeira Parte",
+                        "content": "Em | G | Bm | Bm | Bm | Bm | Bm |G | Am \nBm | Bm | Bm | Bm | Bm | D | G | Am (na 2ª vez tocar: D | D# | E)",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Refrão",
+                        "content": "       Em             | Bm   |     Am                  | Bm \nG|-------------------------------------------------------------------|\nD|-------------------------------------------------------------------|\nA|--7--7---7---------------5-5-7-7----------------------------5-5-7-7|\nE|-------9---9--7-5-7--7-7---------5-3-5--5-3-5--5-3-7---7-7---------|",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "solo",
+                        "content": "G|--------12--14/16(h)14---12-11-------------------------------------|\nD|--12-14---------------------------12----  12-14--12----------------|\nA|--------------------------------------14-------------14--10--12(b)-|\nE|-------------------------------------------------------------------|",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Verso",
+                        "content": "Em | G | Bm | Bm | Bm | Bm | Bm |G | Am \nE | E7(s)E9\nBm | Bm | Bm | Bm | Bm | D | G | Am (na 2ª vez tocar: D | D# | E)",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Refrão (igual)",
+                        "content": "       Em             | Bm   |     Am                  | Bm \nG|-------------------------------------------------------------------|\nD|-------------------------------------------------------------------|\nA|--7--7---7---------------5-5-7-7----------------------------5-5-7-7|\nE|-------9---9--7-5-7--7-7---------5-3-5--5-3-5--5-3-7---7-7---------|",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Ponte",
+                        "content": "G|-----------12-12--9-9-------------------------------|\nD|--7~--9~----------------10-10-----------7~---9------|\nA|-------------------------------12-12----------------|\nE|----------------------------------------------------|",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "RAP",
+                        "content": "C | C | Em | Em | Gm | Gm | Bm | Gm\nE | Gm | Am",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    }
+                ]
+            },
+            {
+                "id": 1776128318899,
+                "title": "Dançar na Chuva",
+                "artist": "Fernandinho",
+                "key": "D",
+                "bpm": "128",
+                "notes": "No início, o baixo costuma sustentar o pedal em D enquanto os acordes mudam em cima",
+                "sections": [
+                    {
+                        "name": "Primeira Parte",
+                        "content": "D | D | D | D\nD | D | G | G\nD | D | D | D\nD | D | G | F",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Refrão",
+                        "content": "D | F# | B | F#\nG | F# | E | A\nD | F# | B | F#\nG | F# | E | A\nB (Sustenta para a virada)\nNa repetição:\nB (Convenção: B - B - C# - D)",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Ponte - Dance",
+                        "content": "B | B | B | B\nE | F# | G | A\nE | F# | G | A",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Passagem",
+                        "content": "(Notas isoladas): B\n(Descida cromática): \n D - F# - B - Bb \n D - F# - Bb - A \n D - F# - A - Ab - G - Gb - D",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "É proibido",
+                        "content": "B | B | B | B\n(Riff): D - E - F# - A - Ab - E - F# (4x)",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Refrão Final",
+                        "content": "D | F# | B | F#\nG | F# | E | A\nD | Bb (Inversão) | B | G# (Inversão)\nG | F# | E | A\nB (Finaliza)",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    }
+                ]
+            },
+            {
+                "id": 1776165607168,
+                "title": "Que Ruja o Leão",
+                "artist": "Isaias Saad",
+                "key": "F#m",
+                "bpm": "70",
+                "notes": "No refrão, para dar o efeito de que a \"terra estremece\", experimente tocar a tônica e a oitava (Ex: F# na corda E, casa 2 + F# na corda D, casa 4). Isso preenche muito o som no Power Trio ou em bandas maiores.",
+                "sections": [
+                    {
+                        "name": "Intro",
+                        "content": "F# | E | D | B",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Primeira Parte",
+                        "content": "F# | F# | F# | F# (O baixo mantém o pedal em F# mesmo nas mudanças de acorde)\nF# | F# | F# | F#",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Refrão",
+                        "content": "E | F# | E | E\nD | B | F# | F# (Repete conforme a intensidade)",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Solo 1",
+                        "content": "E | D | B | B\nF# | E | D | B",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Ponte",
+                        "content": "F# | E | D | B\nF# | E | F# | E\nF# | E | D | B\nF# | E | F# | F#",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Solo 2",
+                        "content": "E | D | B | B\nF# | E | D | B",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Passagem",
+                        "content": "F# | F# | F# | F# (Sustente a nota pedal e vá crescendo a dinâmica)",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Refrão Final",
+                        "content": "F# | F# | E | E\nD | B | F# | F#\nE | F# | E | E\nD | B | F# | F#",
+                        "isTab": false,
+                        "type": "CHORDS",
+                        "layout": "text"
+                    }
+                ]
+            },
+            {
+                "id": 1777934390052,
+                "title": "Até Outra Vez (bênção)",
+                "artist": "Projeto SOLA",
+                "key": "D",
+                "bpm": "132",
+                "notes": "",
+                "sections": [
+                    {
+                        "name": "VERSO",
+                        "content": "D | D(h)E | \nD | D(h)E |\nG | A | Em",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Refrão",
+                        "content": "D | G | Bm |\nG | F# | Em | D-A-D",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    }
+                ]
+            },
+            {
+                "id": 1778080755818,
+                "title": "Teu Reino",
+                "artist": "Cristo Vivo",
+                "key": "E",
+                "bpm": "140",
+                "notes": "Durante o solo, o foco sai do Mi (E) e vai para o C# (Dó sustenido). Sinta o peso dessa nota (Corda A, casa 4) para dar sustentação ao guitarrista.",
+                "sections": [
+                    {
+                        "name": "Primeira Parte",
+                        "content": "E (x4)\nA | F# | E |",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Refrão",
+                        "content": "A | F# | E | E8\nA | F# | E |",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    },
+                    {
+                        "name": "Solo",
+                        "content": "C# | F# | E",
+                        "type": "CHORDS",
+                        "layout": "text"
+                    }
+                ]
+            }
+        ];
 
-const INITIAL_PLAYLISTS = [
-  {
-    "id": 1777934106334,
-    "name": "Culto de domingo",
-    "songIds": [
-      1775917311576,
-      1775781915024,
-      1775918240881,
-      1778080755818
-    ]
-  },
-  {
-    "id": 1777934118201,
-    "name": "Culto de sábado",
-    "songIds": []
-  }
-];
+        const INITIAL_PLAYLISTS = [
+            {
+                "id": 1777934106334,
+                "name": "Culto de domingo",
+                "songIds": [
+                    1775917311576,
+                    1775781915024,
+                    1775918240881,
+                    1778080755818
+                ]
+            },
+            {
+                "id": 1777934118201,
+                "name": "Culto de sábado",
+                "songIds": []
+            }
+        ];
 
         // --- Utilitários de Persistência ---
         function getLibrary() {
@@ -2300,7 +2472,7 @@ const INITIAL_PLAYLISTS = [
             }
         });
 
-                        // --- Sincronização Automática em Nuvem (EventSource SSE & PubSub) ---
+        // --- Sincronização Automática em Nuvem (EventSource SSE & PubSub) ---
         let cloudSyncKey = safeGetStorage('bass_sync_key') || '';
         let cloudEventSource = null;
         let isSyncingFromCloud = false;
@@ -2378,7 +2550,7 @@ const INITIAL_PLAYLISTS = [
                             try {
                                 const parsed = JSON.parse(lines[i]);
                                 if (processParsedEvent(parsed)) break;
-                            } catch (e) {}
+                            } catch (e) { }
                         }
                     } else {
                         pushLocalToCloud(false);
@@ -2538,4 +2710,5 @@ const INITIAL_PLAYLISTS = [
             initApp();
         }</script>
 </body>
+
 </html>
