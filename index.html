@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0f172a">
+    <meta name="theme-color" content="#ffc72c">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="BassBlocks">
+    <link rel="icon" type="image/jpeg" href="icon-192.jpg">
     <link rel="apple-touch-icon" href="icon-192.jpg">
     <link rel="manifest" href="manifest.json">
         <title>BassBlocks v3.7</title>
@@ -2513,7 +2514,7 @@ const INITIAL_PLAYLISTS = [
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js?v=3.17').then(reg => {
+                navigator.serviceWorker.register('./sw.js?v=3.18').then(reg => {
                     console.log('Service Worker registrado:', reg.scope);
                 }).catch(err => {
                     console.warn('Erro ao registrar Service Worker:', err);
