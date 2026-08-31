@@ -10,6 +10,9 @@ convert_*.py
 process_*.py
 list_*.py
 extract_*.py
+enrich_*.py
+inspect_*.py
+condense_*.py
 patch_*.py
 update_*.py
 add_*.py
