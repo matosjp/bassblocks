@@ -11,7 +11,7 @@
     <link rel="icon" type="image/jpeg" href="icon-192.jpg">
     <link rel="apple-touch-icon" href="icon-192.jpg">
     <link rel="manifest" href="manifest.json">
-    <title>BassBlocks v4.2 — Cifras, Tabs & Setlists para Baixistas</title>
+    <title>BassBlocks v4.4 — Cifras, Tabs & Setlists para Baixistas</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -331,7 +331,7 @@
             <div class="bg-[#ffc72c] text-[#1c1b18] px-3 py-1.5 rounded-xl font-black text-xl tracking-tighter border-3 border-[var(--border-color)] shadow-[3px_3px_0px_var(--shadow-color)]">
                 BB</div>
             <h1 class="text-2xl font-black tracking-tight text-[var(--text-color)]">BASS<span class="text-[#ff8b3d]">BLOCKS</span>
-                <span class="text-[10px] bg-[var(--card-bg)] text-[var(--text-color)] px-2 py-0.5 rounded-lg border-2 border-[var(--border-color)] font-bold ml-1">v4.2 🐱</span>
+                <span class="text-[10px] bg-[var(--card-bg)] text-[var(--text-color)] px-2 py-0.5 rounded-lg border-2 border-[var(--border-color)] font-bold ml-1">v4.4 🐱</span>
             </h1>
         </div>
 
@@ -822,7 +822,7 @@
          */
 
         // --- Módulo Compactador LZString ---
-        const LZString = (function () {
+        window.LZString = window.LZString || (function () {
             const f = String.fromCharCode;
             const keyStrBase64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
             return {
@@ -6264,7 +6264,7 @@
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js?v=4.2').then(reg => {
+                navigator.serviceWorker.register('./sw.js?v=4.4').then(reg => {
                     reg.update().catch(() => {});
                 }).catch(() => { });
             });
