@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bassblocks-v4.1';
+const CACHE_NAME = 'bassblocks-v4.2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -48,10 +48,30 @@ self.addEventListener('fetch', event => {
     return;
   }
 
+  // Network-First para navegação HTML (garante sempre a versão mais recente da aplicação)
+  if (event.request.mode === 'navigate' || event.request.url.endsWith('index.html')) {
+    event.respondWith(
+      fetch(event.request).then(networkResponse => {
+        if (networkResponse && networkResponse.status === 200) {
+          const resClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, resClone);
+          });
+        }
+        return networkResponse;
+      }).catch(() => {
+        return caches.match(event.request, { ignoreSearch: true }).then(cached => {
+          return cached || caches.match('./index.html', { ignoreSearch: true }) || caches.match('./', { ignoreSearch: true });
+        });
+      })
+    );
+    return;
+  }
+
+  // Cache-First / Stale-While-Revalidate para ativos estáticos (ícones, fontes, libs)
   event.respondWith(
     caches.match(event.request, { ignoreSearch: true }).then(cachedResponse => {
       if (cachedResponse) {
-        // Stale-while-revalidate: Serve o cache instantaneamente e atualiza em segundo plano
         fetch(event.request).then(networkResponse => {
           if (networkResponse && networkResponse.status === 200) {
             caches.open(CACHE_NAME).then(cache => {
@@ -62,7 +82,6 @@ self.addEventListener('fetch', event => {
         return cachedResponse;
       }
 
-      // Cache miss: busca da rede
       return fetch(event.request).then(networkResponse => {
         if (networkResponse && networkResponse.status === 200) {
           caches.open(CACHE_NAME).then(cache => {
@@ -70,14 +89,6 @@ self.addEventListener('fetch', event => {
           });
         }
         return networkResponse;
-      }).catch(err => {
-        // Se estiver offline e for uma navegação de página, serve o index.html
-        if (event.request.mode === 'navigate') {
-          return caches.match('./index.html', { ignoreSearch: true }) ||
-                 caches.match('index.html', { ignoreSearch: true }) ||
-                 caches.match('./', { ignoreSearch: true });
-        }
-        throw err;
       });
     })
   );
