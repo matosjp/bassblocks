@@ -374,7 +374,7 @@
     </nav>
 
     <!-- Tela: Criar / Editar Música -->
-    <main id="view-create" class="max-w-4xl w-full mx-auto space-y-6 flex-1">
+    <main id="view-create" class="max-w-4xl w-full mx-auto hidden space-y-6 flex-1">
         <div class="neo-card p-6">
             <div class="flex justify-between items-center mb-4">
                 <h2 id="create-view-title" class="text-sm font-black uppercase tracking-widest text-[var(--text-color)]">Nova Música</h2>
@@ -404,7 +404,7 @@
     </main>
 
     <!-- Tela: Biblioteca -->
-    <main id="view-library" class="max-w-5xl w-full mx-auto hidden space-y-6 flex-1">
+    <main id="view-library" class="max-w-5xl w-full mx-auto space-y-6 flex-1">
         <div class="flex flex-col md:flex-row gap-3 bg-[var(--card-bg)] p-4 rounded-2xl border-3 border-[var(--border-color)] shadow-[4px_4px_0px_var(--shadow-color)]">
             <div class="relative flex-1">
                 <input type="text" id="search-input" oninput="renderLibrary()" placeholder="🔍 Buscar por música, artista ou anotação..." class="neo-input w-full">
@@ -6309,9 +6309,45 @@
             }
         });
 
-        // --- Inicialização da Aplicação ---
+        // --- Exportação Explícita para o Escopo Global (window) ---
+        window.showView = showView;
+        window.prepareCreate = prepareCreate;
+        window.openCloudSyncModal = openCloudSyncModal;
+        window.closeCloudSyncModal = closeCloudSyncModal;
+        window.switchSyncModalTab = switchSyncModalTab;
+        window.toggleDarkMode = toggleDarkMode;
+        window.openSheet = openSheet;
+        window.editSong = editSong;
+        window.deleteSong = deleteSong;
+        window.saveSong = saveSong;
+        window.renderLibrary = renderLibrary;
+        window.renderPlaylists = renderPlaylists;
+        window.handlePdfImportFile = handlePdfImportFile;
+        window.handleCifraImportFile = handleCifraImportFile;
+        window.installPWA = installPWA;
+        window.pushLocalToCloud = pushLocalToCloud;
+        window.fetchCloudDataNow = fetchCloudDataNow;
+        window.shareDataNative = shareDataNative;
+        window.shareLinkNative = shareLinkNative;
+        window.copyShareLink = copyShareLink;
+
+        // --- Inicialização da Aplicação & Event Listeners Programáticos ---
         function initApp() {
             initTheme();
+            
+            // Garante ligação programática dos botões do cabeçalho
+            const createBtn = document.getElementById('nav-btn-create');
+            if (createBtn) createBtn.onclick = prepareCreate;
+
+            const libBtn = document.getElementById('nav-btn-library');
+            if (libBtn) libBtn.onclick = () => showView('library');
+
+            const plsBtn = document.getElementById('nav-btn-playlists');
+            if (plsBtn) plsBtn.onclick = () => showView('playlists');
+
+            const cloudBtn = document.getElementById('cloud-sync-nav-btn');
+            if (cloudBtn) cloudBtn.onclick = openCloudSyncModal;
+
             if (cloudSyncKey) {
                 connectCloudRoom(cloudSyncKey, false);
             }
