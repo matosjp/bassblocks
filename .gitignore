@@ -5,6 +5,11 @@
 # Ignore temporary backup files if desired
 *.json.bak
 bassblocks_backup_*.json
+louveapp_*.json
+convert_*.py
+process_*.py
+list_*.py
+extract_*.py
 patch_*.py
 update_*.py
 add_*.py
