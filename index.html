@@ -11,7 +11,7 @@
     <link rel="icon" type="image/jpeg" href="icon-192.jpg">
     <link rel="apple-touch-icon" href="icon-192.jpg">
     <link rel="manifest" href="manifest.json">
-    <title>BassBlocks v4.4 — Cifras, Tabs & Setlists para Baixistas</title>
+    <title>BassBlocks v4.5 — Cifras, Tabs & Setlists para Baixistas</title>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -331,7 +331,7 @@
             <div class="bg-[#ffc72c] text-[#1c1b18] px-3 py-1.5 rounded-xl font-black text-xl tracking-tighter border-3 border-[var(--border-color)] shadow-[3px_3px_0px_var(--shadow-color)]">
                 BB</div>
             <h1 class="text-2xl font-black tracking-tight text-[var(--text-color)]">BASS<span class="text-[#ff8b3d]">BLOCKS</span>
-                <span class="text-[10px] bg-[var(--card-bg)] text-[var(--text-color)] px-2 py-0.5 rounded-lg border-2 border-[var(--border-color)] font-bold ml-1">v4.4 🐱</span>
+                <span class="text-[10px] bg-[var(--card-bg)] text-[var(--text-color)] px-2 py-0.5 rounded-lg border-2 border-[var(--border-color)] font-bold ml-1">v4.5 🐱</span>
             </h1>
         </div>
 
@@ -4678,19 +4678,47 @@
             }
 
             list.innerHTML = lib.map(song => `
-                <div class="bg-[var(--card-bg)] p-5 rounded-2xl border-3 border-[var(--border-color)] shadow-[3px_3px_0px_var(--shadow-color)] hover:shadow-[5px_5px_0px_var(--shadow-color)] hover:-translate-y-0.5 transition flex justify-between items-center group">
-                    <div class="cursor-pointer flex-1 min-w-0 pr-4" onclick="openSheet(${song.id})">
-                        <div class="flex items-center gap-2 mb-1">
-                            <h3 class="font-black text-base group-hover:text-[#ff8b3d] transition truncate">${song.title}</h3>
-                            <span class="bg-[#ffc72c] text-[#1c1b18] text-[10px] font-black px-2 py-0.5 rounded-lg border-2 border-[var(--border-color)] shrink-0">${song.key || '-'}</span>
-                            ${song.notes ? `<span class="text-[10px] text-amber-500 font-black" title="${song.notes}">💡</span>` : ''}
+                <div class="bg-[var(--card-bg)] p-4 rounded-2xl border-3 border-[var(--border-color)] shadow-[3px_3px_0px_var(--shadow-color)] hover:shadow-[5px_5px_0px_var(--shadow-color)] hover:-translate-y-0.5 transition flex flex-col justify-between gap-3 group">
+                    <!-- Linha 1: Título completo da Música + Tom e Badges -->
+                    <div class="cursor-pointer flex items-start justify-between gap-2" onclick="openSheet(${song.id})">
+                        <div class="flex-1 min-w-0">
+                            <h3 class="font-black text-base group-hover:text-[#ff8b3d] transition leading-snug break-words">
+                                ${song.title}
+                            </h3>
                         </div>
-                        <p class="text-xs text-slate-500 font-bold truncate">${song.artist} ${song.bpm ? `• ${song.bpm} BPM` : ''}</p>
+                        <div class="flex items-center gap-1.5 shrink-0 mt-0.5">
+                            <span class="bg-[#ffc72c] text-[#1c1b18] text-xs font-black px-2 py-0.5 rounded-lg border-2 border-[var(--border-color)] shadow-[1px_1px_0px_var(--shadow-color)]">${song.key || '-'}</span>
+                            ${song.notes ? `<span class="text-xs text-amber-500 font-bold" title="${song.notes}">💡</span>` : ''}
+                        </div>
                     </div>
-                    <div class="flex items-center gap-2 shrink-0">
-                        <button onclick="showPlaylistModal(${song.id})" class="p-2.5 bg-[var(--card-bg)] border-2 border-[var(--border-color)] rounded-xl hover:bg-[#ffc72c] hover:text-[#1c1b18] transition shadow-[2px_2px_0px_var(--shadow-color)] font-bold text-xs" title="Adicionar à Setlist">➕ Setlist</button>
-                        <button onclick="editSong(${song.id})" class="p-2.5 bg-[var(--card-bg)] border-2 border-[var(--border-color)] rounded-xl hover:bg-[#ff8b3d] hover:text-[#1c1b18] transition shadow-[2px_2px_0px_var(--shadow-color)]" title="Editar">✏️</button>
-                        <button onclick="deleteSong(${song.id})" class="p-2.5 bg-[var(--card-bg)] border-2 border-[var(--border-color)] rounded-xl text-[#ff5252] hover:bg-[#ff5252] hover:text-white transition shadow-[2px_2px_0px_var(--shadow-color)]" title="Excluir">🗑️</button>
+
+                    <!-- Linha 2: Artista / BPM à esquerda e Botões Minimalistas à direita -->
+                    <div class="flex items-center justify-between gap-2 pt-2 border-t border-dashed border-slate-300 dark:border-slate-700">
+                        <div class="cursor-pointer flex-1 min-w-0 pr-2" onclick="openSheet(${song.id})">
+                            <p class="text-xs text-slate-500 dark:text-slate-400 font-bold truncate">
+                                ${song.artist || 'Artista'} ${song.bpm ? `• ${song.bpm} BPM` : ''}
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            <!-- Adicionar à Setlist -->
+                            <button onclick="showPlaylistModal(${song.id})" class="p-2 bg-[var(--card-bg)] border-2 border-[var(--border-color)] rounded-xl hover:bg-[#ffc72c] hover:text-[#1c1b18] transition shadow-[2px_2px_0px_var(--shadow-color)] active:translate-x-0.5 active:translate-y-0.5" title="Adicionar à Setlist" aria-label="Adicionar à Setlist">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                                </svg>
+                            </button>
+                            <!-- Editar -->
+                            <button onclick="editSong(${song.id})" class="p-2 bg-[var(--card-bg)] border-2 border-[var(--border-color)] rounded-xl hover:bg-[#ff8b3d] hover:text-[#1c1b18] transition shadow-[2px_2px_0px_var(--shadow-color)] active:translate-x-0.5 active:translate-y-0.5" title="Editar Música" aria-label="Editar Música">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                </svg>
+                            </button>
+                            <!-- Excluir -->
+                            <button onclick="deleteSong(${song.id})" class="p-2 bg-[var(--card-bg)] border-2 border-[var(--border-color)] rounded-xl text-[#ff5252] hover:bg-[#ff5252] hover:text-white transition shadow-[2px_2px_0px_var(--shadow-color)] active:translate-x-0.5 active:translate-y-0.5" title="Excluir Música" aria-label="Excluir Música">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
             `).join('');
@@ -4989,13 +5017,20 @@
                                             ${cue ? `<p class="text-[11px] text-[#ff8b3d] font-bold mt-0.5">💡 Dica: ${cue}</p>` : ''}
                                         </div>
                                     </div>
-                                    <div class="flex items-center gap-2 self-end md:self-auto shrink-0">
-                                        <button onclick="openPlaylistNoteModal(${pl.id}, ${song.id})" class="p-1.5 bg-[var(--card-bg)] border border-[var(--border-color)] rounded-lg text-[10px] font-black hover:bg-[#ffc72c] hover:text-[#1c1b18] transition" title="Adicionar / Editar Anotação desta música no setlist">
-                                            ${cue ? '✏️ Editar Dica' : '➕ Add Dica'}
+                                    <div class="flex items-center gap-1.5 self-end md:self-auto shrink-0">
+                                        <button onclick="openPlaylistNoteModal(${pl.id}, ${song.id})" class="p-1.5 bg-[var(--card-bg)] border border-[var(--border-color)] rounded-lg hover:bg-[#ffc72c] hover:text-[#1c1b18] transition flex items-center gap-1 text-[11px] font-bold" title="Adicionar / Editar Anotação desta música no setlist">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                            <span>${cue ? 'Dica' : '+ Dica'}</span>
                                         </button>
-                                        <button onclick="movePlaylistItem(${pl.id}, ${idx}, ${idx - 1})" ${isFirst ? 'disabled class="opacity-20 p-1 text-xs cursor-default"' : 'class="p-1 text-xs font-bold transition hover:text-[#ff8b3d]"'} title="Mover para cima">▲</button>
-                                        <button onclick="movePlaylistItem(${pl.id}, ${idx}, ${idx + 1})" ${isLast ? 'disabled class="opacity-20 p-1 text-xs cursor-default"' : 'class="p-1 text-xs font-bold transition hover:text-[#ff8b3d]"'} title="Mover para baixo">▼</button>
-                                        <button onclick="removeFromPlaylist(${pl.id}, ${song.id})" class="text-[#ff5252] hover:scale-110 p-1 font-bold text-xs ml-1 transition" title="Remover da lista">✕</button>
+                                        <button onclick="movePlaylistItem(${pl.id}, ${idx}, ${idx - 1})" ${isFirst ? 'disabled class="opacity-20 p-1.5 cursor-default"' : 'class="p-1.5 hover:text-[#ff8b3d] hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition"'} title="Mover para cima">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+                                        </button>
+                                        <button onclick="movePlaylistItem(${pl.id}, ${idx}, ${idx + 1})" ${isLast ? 'disabled class="opacity-20 p-1.5 cursor-default"' : 'class="p-1.5 hover:text-[#ff8b3d] hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition"'} title="Mover para baixo">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                                        </button>
+                                        <button onclick="removeFromPlaylist(${pl.id}, ${song.id})" class="text-[#ff5252] hover:bg-red-50 dark:hover:bg-red-950 p-1.5 rounded-lg transition" title="Remover da lista">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                                        </button>
                                     </div>
                                 </div>
                             ` : '';
@@ -6264,7 +6299,7 @@
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js?v=4.4').then(reg => {
+                navigator.serviceWorker.register('./sw.js?v=4.5').then(reg => {
                     reg.update().catch(() => {});
                 }).catch(() => { });
             });
