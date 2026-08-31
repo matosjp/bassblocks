@@ -13,6 +13,8 @@ extract_*.py
 enrich_*.py
 inspect_*.py
 condense_*.py
+apply_*.py
+embed_*.py
 patch_*.py
 update_*.py
 add_*.py
