@@ -42,6 +42,12 @@
     <!-- PDF.js via CDN for PDF Cifra & Chart Conversion -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
+    <!-- LZ-String for efficient lossless cloud sync compression -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
+
+    <!-- QRCode for instant Cross-Device scanning & sharing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
     <style>
         :root {
             --bg-color: #f9f8f3;
@@ -711,10 +717,11 @@
                 <button onclick="closeCloudSyncModal()" class="text-slate-500 hover:text-black dark:hover:text-white font-black text-lg px-2">✕</button>
             </div>
 
-            <!-- Tabs do Modal: Nuvem / Histórico de Versões -->
-            <div class="flex gap-2 border-b-2 border-[var(--border-color)] pb-2 text-xs font-black uppercase">
+            <!-- Tabs do Modal: Nuvem / QR Code / Histórico / Backup -->
+            <div class="flex flex-wrap gap-2 border-b-2 border-[var(--border-color)] pb-2 text-xs font-black uppercase">
                 <button id="tab-cloud-btn" onclick="switchSyncModalTab('cloud')" class="px-3 py-1.5 rounded-lg bg-[#ffc72c] text-[#1c1b18]">Sincronização</button>
-                <button id="tab-history-btn" onclick="switchSyncModalTab('history')" class="px-3 py-1.5 rounded-lg text-slate-500 hover:text-[var(--text-color)]">Histórico de Snapshots (<span id="snapshots-count">0</span>)</button>
+                <button id="tab-qr-btn" onclick="switchSyncModalTab('qr')" class="px-3 py-1.5 rounded-lg text-slate-500 hover:text-[var(--text-color)]">📲 QR Code & Link</button>
+                <button id="tab-history-btn" onclick="switchSyncModalTab('history')" class="px-3 py-1.5 rounded-lg text-slate-500 hover:text-[var(--text-color)]">Snapshots (<span id="snapshots-count">0</span>)</button>
                 <button id="tab-backup-btn" onclick="switchSyncModalTab('backup')" class="px-3 py-1.5 rounded-lg text-slate-500 hover:text-[var(--text-color)]">Exportar / Importar</button>
             </div>
 
@@ -727,18 +734,43 @@
 
                 <div>
                     <label class="text-[10px] font-black text-slate-500 uppercase tracking-wider block mb-1">Código da Sala / Banda</label>
-                    <input type="text" id="cloud-room-input" placeholder="Ex: baixo-meu-grupo-2026" class="neo-input w-full text-xs">
-                    <p class="text-[11px] text-slate-500 font-medium mt-1.5">Use a mesma chave em múltiplos dispositivos. As alterações de cada música são mescladas automaticamente por data de modificação.</p>
+                    <div class="flex gap-2">
+                        <input type="text" id="cloud-room-input" placeholder="Ex: baixo-meu-grupo-2026" class="neo-input w-full text-xs">
+                        <button onclick="generateRandomRoomCode()" class="neo-btn-secondary px-3 py-2 text-xs font-bold whitespace-nowrap" title="Gerar Código Aleatório">🎲 Gerar</button>
+                    </div>
+                    <p class="text-[11px] text-slate-500 font-medium mt-1.5">Conecte a mesma sala em múltiplos celulares e computadores para sincronizar automaticamente.</p>
                 </div>
 
                 <div class="space-y-2 pt-2">
-                    <button onclick="connectCloudFromModal()" class="w-full neo-btn-green py-2.5 text-xs transition">Conectar Sala & Sincronizar</button>
-                    <button onclick="pushLocalToCloud(true)" class="w-full neo-btn-secondary py-2 text-xs transition">Forçar Envio Manual para a Nuvem</button>
+                    <button onclick="connectCloudFromModal()" class="w-full neo-btn-green py-2.5 text-xs transition">Conectar Sala & Ativar Nuvem</button>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="pushLocalToCloud(true)" class="w-full neo-btn py-2 text-xs transition flex items-center justify-center gap-1">
+                            <span>🚀 Forçar Envio (Upload)</span>
+                        </button>
+                        <button onclick="fetchCloudDataNow(true)" class="w-full neo-btn-secondary py-2 text-xs transition flex items-center justify-center gap-1">
+                            <span>📥 Puxar da Nuvem (Baixar)</span>
+                        </button>
+                    </div>
                     <button onclick="disconnectCloud()" id="btn-cloud-disconnect" class="w-full neo-btn-danger py-2 text-xs hidden transition">Desconectar da Nuvem</button>
                 </div>
             </div>
 
-            <!-- Painel 2: Histórico de Versões & Rollback -->
+            <!-- Painel 2: QR Code & Compartilhamento Instantâneo -->
+            <div id="sync-panel-qr" class="space-y-4 hidden flex-col items-center text-center">
+                <p class="text-xs text-slate-500 font-bold">Escaneie o QR Code com a câmera de outro celular para abrir o BassBlocks conectado à mesma sala:</p>
+                <div id="qrcode-container" class="p-4 bg-white rounded-2xl border-3 border-[var(--border-color)] shadow-[4px_4px_0px_var(--shadow-color)] flex items-center justify-center min-w-[200px] min-h-[200px]">
+                    <div id="qrcode-canvas"></div>
+                </div>
+                <div class="w-full space-y-2">
+                    <input type="text" id="share-link-input" readonly placeholder="Link de Sincronização" title="Link de Sincronização Direta" aria-label="Link de Sincronização Direta" class="neo-input w-full text-center text-xs font-mono select-all">
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="copyShareLink()" class="neo-btn-secondary py-2 text-xs font-bold">📋 Copiar Link</button>
+                        <button onclick="shareLinkNative()" class="neo-btn py-2 text-xs font-bold">📲 Compartilhar Link</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Painel 3: Histórico de Versões & Rollback -->
             <div id="sync-panel-history" class="space-y-3 hidden flex-1 overflow-y-auto max-h-80">
                 <p class="text-xs text-slate-500 font-bold">Snapshots automáticos salvos antes de cada sincronização ou edição. Restaure a qualquer momento se algo for alterado indevidamente:</p>
                 <div id="snapshots-list" class="space-y-2">
@@ -746,17 +778,23 @@
                 </div>
             </div>
 
-            <!-- Painel 3: Backup JSON -->
+            <!-- Painel 4: Backup JSON & Envio por WhatsApp / AirDrop -->
             <div id="sync-panel-backup" class="space-y-3 hidden">
-                <p class="text-xs text-slate-500 font-bold">Faça o download de um arquivo JSON completo contendo todo o seu repertório e setlists para guardar no Google Drive ou enviar por WhatsApp:</p>
+                <p class="text-xs text-slate-500 font-bold">Transfira todo o repertório e setlists diretamente para outro aparelho via arquivo JSON ou envie pelo WhatsApp / AirDrop:</p>
                 <div class="grid grid-cols-2 gap-3 pt-2">
                     <button onclick="exportData()" class="neo-btn py-3 text-xs flex flex-col items-center gap-1">
                         <span class="text-lg">💾</span>
-                        <span>Baixar Backup JSON</span>
+                        <span>Baixar Arquivo JSON</span>
                     </button>
-                    <button onclick="document.getElementById('import-input').click()" class="neo-btn-secondary py-3 text-xs flex flex-col items-center gap-1">
-                        <span class="text-lg">📥</span>
-                        <span>Restaurar de Arquivo JSON</span>
+                    <button onclick="shareDataNative()" class="neo-btn bg-emerald-600 text-white py-3 text-xs flex flex-col items-center gap-1">
+                        <span class="text-lg">📲</span>
+                        <span>Enviar via WhatsApp / AirDrop</span>
+                    </button>
+                </div>
+                <div class="pt-2">
+                    <button onclick="document.getElementById('import-input').click()" class="w-full neo-btn-secondary py-3 text-xs flex items-center justify-center gap-2">
+                        <span class="text-base">📥</span>
+                        <span>Restaurar / Importar Arquivo JSON</span>
                     </button>
                     <input type="file" id="import-input" class="hidden" accept=".json" onchange="importData(this)" title="Importar Backup JSON" aria-label="Importar Backup JSON">
                 </div>
@@ -2905,11 +2943,12 @@
             input.value = '';
         }
 
-        // --- Sincronização em Nuvem Resiliente (Chunked + LZString + Item Merge) ---
+        // --- Sincronização em Nuvem Resiliente (Chunked + LZString + CRDT + QR Code + Web Share) ---
         let cloudSyncKey = safeGetStorage('bass_sync_key') || '';
         let cloudEventSource = null;
         let isSyncingFromCloud = false;
         const incomingChunkBuffers = {};
+        let qrcodeInstance = null;
 
         function openCloudSyncModal() {
             document.getElementById('cloud-room-input').value = cloudSyncKey;
@@ -2928,12 +2967,116 @@
         }
 
         function switchSyncModalTab(tab) {
-            ['cloud', 'history', 'backup'].forEach(t => {
-                document.getElementById(`sync-panel-${t}`).classList.add('hidden');
-                document.getElementById(`tab-${t}-btn`).className = 'px-3 py-1.5 rounded-lg text-slate-500 hover:text-[var(--text-color)]';
+            ['cloud', 'qr', 'history', 'backup'].forEach(t => {
+                const el = document.getElementById(`sync-panel-${t}`);
+                if (el) el.classList.add('hidden');
+                const btn = document.getElementById(`tab-${t}-btn`);
+                if (btn) btn.className = 'px-3 py-1.5 rounded-lg text-slate-500 hover:text-[var(--text-color)]';
             });
-            document.getElementById(`sync-panel-${tab}`).classList.remove('hidden');
-            document.getElementById(`tab-${tab}-btn`).className = 'px-3 py-1.5 rounded-lg bg-[#ffc72c] text-[#1c1b18] font-black';
+            const activePanel = document.getElementById(`sync-panel-${tab}`);
+            if (activePanel) activePanel.classList.remove('hidden');
+            const activeBtn = document.getElementById(`tab-${tab}-btn`);
+            if (activeBtn) activeBtn.className = 'px-3 py-1.5 rounded-lg bg-[#ffc72c] text-[#1c1b18] font-black';
+
+            if (tab === 'qr') {
+                renderSyncQRCode();
+            }
+        }
+
+        function generateRandomRoomCode() {
+            const randomCode = 'bass-' + Math.random().toString(36).substring(2, 8);
+            document.getElementById('cloud-room-input').value = randomCode;
+        }
+
+        function getRoomShareUrl() {
+            const key = cloudSyncKey || document.getElementById('cloud-room-input').value.trim() || 'meu-grupo';
+            const base = window.location.origin + window.location.pathname;
+            return `${base}?room=${encodeURIComponent(key)}`;
+        }
+
+        function renderSyncQRCode() {
+            const container = document.getElementById('qrcode-canvas');
+            const linkInput = document.getElementById('share-link-input');
+            if (!container) return;
+
+            const url = getRoomShareUrl();
+            if (linkInput) linkInput.value = url;
+
+            container.innerHTML = '';
+            if (typeof QRCode !== 'undefined') {
+                try {
+                    qrcodeInstance = new QRCode(container, {
+                        text: url,
+                        width: 180,
+                        height: 180,
+                        colorDark: "#1c1b18",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.M
+                    });
+                } catch (e) {
+                    console.warn('Erro ao gerar QRCode:', e);
+                }
+            } else {
+                container.innerHTML = `<p class="text-xs text-slate-400 font-bold p-4">Abra o link abaixo no outro aparelho</p>`;
+            }
+        }
+
+        function copyShareLink() {
+            const url = getRoomShareUrl();
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(url).then(() => {
+                    showToast('Link da sala copiado!', 'success');
+                }).catch(() => {
+                    showToast(url, 'info');
+                });
+            } else {
+                showToast(url, 'info');
+            }
+        }
+
+        async function shareLinkNative() {
+            const url = getRoomShareUrl();
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'BassBlocks - Sincronização de Repertório',
+                        text: `Acesse e sincronize o repertório no BassBlocks na sala "${cloudSyncKey}":`,
+                        url: url
+                    });
+                } catch (e) { }
+            } else {
+                copyShareLink();
+            }
+        }
+
+        async function shareDataNative() {
+            const lib = getLibrary();
+            const pls = getPlaylists();
+            const dataStr = JSON.stringify({
+                version: "4.0",
+                exportedAt: new Date().toISOString(),
+                lib: lib,
+                pls: pls
+            }, null, 2);
+
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const fileName = `bassblocks_repertorio_${new Date().toISOString().slice(0, 10)}.json`;
+
+            if (navigator.canShare && navigator.canShare({ files: [new File([blob], fileName, { type: 'application/json' })] })) {
+                try {
+                    const file = new File([blob], fileName, { type: 'application/json' });
+                    await navigator.share({
+                        title: 'Repertório BassBlocks',
+                        text: 'Repertório completo de cifras e setlists para Baixo',
+                        files: [file]
+                    });
+                    return;
+                } catch (e) { }
+            }
+
+            // Fallback para download direto
+            exportData();
+            showToast('Arquivo JSON gerado para envio!', 'success');
         }
 
         function connectCloudFromModal() {
@@ -2957,24 +3100,8 @@
 
             const roomTopic = 'bassblocks_' + cloudSyncKey;
 
-            // 1. Consultar mensagens recentes armazenadas no canal
-            fetch(`https://ntfy.sh/${roomTopic}/json?poll=1`)
-                .then(res => res.text())
-                .then(text => {
-                    const lines = text.trim().split('\n').filter(l => l.trim());
-                    if (lines.length > 0) {
-                        for (let i = lines.length - 1; i >= 0; i--) {
-                            try {
-                                const parsed = JSON.parse(lines[i]);
-                                if (processCloudMessage(parsed)) break;
-                            } catch (e) { }
-                        }
-                    } else {
-                        pushLocalToCloud(false);
-                    }
-                }).catch(err => {
-                    console.warn('Erro ao consultar sala na nuvem:', err);
-                });
+            // 1. Consultar mensagens recentes armazenadas no canal (com since=all e sem cache)
+            fetchCloudDataNow(false);
 
             // 2. Inscrever para atualizações em tempo real (SSE)
             try {
@@ -2993,6 +3120,48 @@
 
             updateCloudSyncUI();
             if (notify) showToast(`Conectado à sala "${cloudSyncKey}"`, 'success');
+        }
+
+        async function fetchCloudDataNow(notify = true) {
+            if (!cloudSyncKey) {
+                if (notify) showToast('Conecte a uma sala primeiro!', 'error');
+                return;
+            }
+
+            const roomTopic = 'bassblocks_' + cloudSyncKey;
+            if (notify) showToast('Consultando nuvem...', 'info');
+
+            try {
+                const res = await fetch(`https://ntfy.sh/${roomTopic}/json?poll=1&since=all&_t=${Date.now()}`);
+                const text = await res.text();
+                const lines = text.trim().split('\n').filter(l => l.trim());
+                let foundAny = false;
+
+                if (lines.length > 0) {
+                    for (let i = 0; i < lines.length; i++) {
+                        try {
+                            const parsed = JSON.parse(lines[i]);
+                            if (processCloudMessage(parsed)) {
+                                foundAny = true;
+                            }
+                        } catch (e) { }
+                    }
+                }
+
+                if (foundAny) {
+                    if (notify) showToast('Repertório atualizado da nuvem!', 'success');
+                } else {
+                    // Se não havia nada na nuvem e este dispositivo possui dados, sobe
+                    const localCount = getLibrary().length;
+                    if (localCount > 0) {
+                        pushLocalToCloud(false);
+                    }
+                    if (notify) showToast('Sala consultada. Tudo atualizado!', 'info');
+                }
+            } catch (err) {
+                console.warn('Erro ao consultar sala na nuvem:', err);
+                if (notify) showToast('Erro de conexão ao buscar dados da nuvem.', 'error');
+            }
         }
 
         function processCloudMessage(parsed) {
@@ -3016,14 +3185,20 @@
                     // Se todos os chunks foram recebidos, reconstrói o payload
                     const isComplete = incomingChunkBuffers[batchId].chunks.every(c => c !== null);
                     if (isComplete) {
-                        const fullCompressed = incomingChunkBuffers[batchId].chunks.join('');
+                        const fullDataStr = incomingChunkBuffers[batchId].chunks.join('');
                         delete incomingChunkBuffers[batchId];
-                        const decompressed = LZString.decompressFromBase64(fullCompressed);
-                        if (decompressed) {
-                            const fullData = JSON.parse(decompressed);
-                            applySmartCloudMerge(fullData);
-                            return true;
+
+                        let decompressed = fullDataStr;
+                        if (typeof LZString !== 'undefined') {
+                            try {
+                                const lzDecomp = LZString.decompressFromBase64(fullDataStr);
+                                if (lzDecomp) decompressed = lzDecomp;
+                            } catch (e) { }
                         }
+
+                        const fullData = JSON.parse(decompressed);
+                        applySmartCloudMerge(fullData);
+                        return true;
                     }
                 } catch (e) {
                     console.warn('Erro ao processar chunk:', e);
@@ -3031,7 +3206,7 @@
                 return false;
             }
 
-            // Se for mensagem JSON direta (compatibilidade com versões anteriores)
+            // Se for mensagem JSON direta
             if (messageText.startsWith('{')) {
                 try {
                     const data = JSON.parse(messageText);
@@ -3071,7 +3246,7 @@
                             const localSong = mergedLibMap.get(rSong.id);
                             const rTime = rSong.updatedAt || 0;
                             const lTime = localSong.updatedAt || 0;
-                            if (rTime > lTime) {
+                            if (rTime >= lTime) {
                                 mergedLibMap.set(rSong.id, rSong);
                             }
                         }
@@ -3092,7 +3267,7 @@
                             const localPl = mergedPlsMap.get(rPl.id);
                             const rTime = rPl.updatedAt || 0;
                             const lTime = localPl.updatedAt || 0;
-                            if (rTime > lTime) {
+                            if (rTime >= lTime) {
                                 mergedPlsMap.set(rPl.id, rPl);
                             }
                         }
@@ -3123,7 +3298,10 @@
 
         // --- Envio de Dados com Chunking & Compressão ---
         async function pushLocalToCloud(notify = true) {
-            if (!cloudSyncKey) return;
+            if (!cloudSyncKey) {
+                if (notify) showToast('Conecte a uma sala primeiro!', 'error');
+                return;
+            }
             const lib = getLibrary();
             const pls = getPlaylists();
             const roomTopic = 'bassblocks_' + cloudSyncKey;
@@ -3134,15 +3312,23 @@
                 updatedAt: Date.now()
             });
 
-            // Compacta com LZString
-            const compressed = LZString.compressToBase64(payload);
-            const chunkSize = 3500; // Mantém dentro do limite de 4KB do ntfy.sh
-            const totalChunks = Math.ceil(compressed.length / chunkSize);
+            // Compacta com LZString se disponível
+            let uploadStr = payload;
+            if (typeof LZString !== 'undefined') {
+                try {
+                    uploadStr = LZString.compressToBase64(payload);
+                } catch (e) { }
+            }
+
+            const chunkSize = 3500; // Limite de payload seguro
+            const totalChunks = Math.ceil(uploadStr.length / chunkSize);
             const batchId = 'b_' + Date.now();
+
+            if (notify) showToast(`Enviando ${lib.length} músicas para a nuvem...`, 'info');
 
             try {
                 for (let i = 0; i < totalChunks; i++) {
-                    const chunkStr = compressed.substr(i * chunkSize, chunkSize);
+                    const chunkStr = uploadStr.substr(i * chunkSize, chunkSize);
                     const chunkPacket = JSON.stringify({
                         bId: batchId,
                         cIdx: i,
@@ -3152,14 +3338,18 @@
 
                     await fetch(`https://ntfy.sh/${roomTopic}`, {
                         method: 'POST',
-                        body: chunkPacket
+                        body: chunkPacket,
+                        headers: {
+                            'Title': 'BassBlocks Sync',
+                            'Priority': 'high'
+                        }
                     });
                 }
 
                 if (notify) showToast('Músicas sincronizadas com a nuvem!', 'success');
             } catch (err) {
                 console.warn('Erro ao enviar dados:', err);
-                if (notify) showToast('Falha na conexão de rede para nuvem.', 'error');
+                if (notify) showToast('Falha na conexão ao enviar para nuvem.', 'error');
             }
         }
 
@@ -3221,9 +3411,22 @@
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js?v=4.0').catch(() => { });
+                navigator.serviceWorker.register('./sw.js?v=4.1').catch(() => { });
             });
         }
+
+        // --- Verificação de Parâmetros de URL para Conexão Automática (?room=...) ---
+        window.addEventListener('DOMContentLoaded', () => {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const roomFromUrl = urlParams.get('room') || (window.location.hash.startsWith('#room=') ? window.location.hash.replace('#room=', '') : null);
+                if (roomFromUrl) {
+                    connectCloudRoom(roomFromUrl, true);
+                } else if (cloudSyncKey) {
+                    connectCloudRoom(cloudSyncKey, false);
+                }
+            } catch (e) { }
+        });
 
         // --- Atalhos de Teclado & Pedais Bluetooth ---
         window.addEventListener('keydown', e => {
