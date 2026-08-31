@@ -4,6 +4,7 @@
 
 # Ignore temporary backup files if desired
 *.json.bak
+bassblocks_backup_*.json
 patch_*.py
 update_*.py
 add_*.py
